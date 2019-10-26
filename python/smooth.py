@@ -45,8 +45,8 @@ def corrige(listax, listay):
 	medioy/=(len(listax)-1)
 	cont=0
 	while cont<len(listax):
-		resx.append(mediox+(5.03266031019*(len(listax)-1)**(-.851770887821))*(listax[cont]-mediox))
-		resy.append(medioy+(5.03266031019*(len(listax)-1)**(-.851770887821))*(listay[cont]-medioy))
+		resx.append(mediox+(1.65388814151*(len(listax)-1)**(-.151604148771))*(listax[cont]-mediox))
+		resy.append(medioy+(1.65388814151*(len(listax)-1)**(-.151604148771))*(listay[cont]-medioy))
 		cont+=1
 	return resx, resy
 
@@ -67,6 +67,7 @@ while cont<len(listay):
 	cont+=1
 plt.plot(listax, listay)
 listax, listay=corrige(listax, listay)
+#plt.plot(listax, listay)
 if listax[0]==listax[-1] and listay[0]==listay[-1]:
 	eh_fechado=True
 else:
