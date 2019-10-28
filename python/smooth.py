@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import sys
 #este método recebe uma lista de inteiros e cria pontos médios nas suas arestas
 def quebra(lista):
 	'''(list)->list'''
@@ -45,40 +46,33 @@ def corrige(listax, listay):
 	medioy/=(len(listax)-1)
 	cont=0
 	while cont<len(listax):
-		resx.append(mediox+(5.03266031019*(len(listax)-1)**(-.851770887821))*(listax[cont]-mediox))
-		resy.append(medioy+(5.03266031019*(len(listax)-1)**(-.851770887821))*(listay[cont]-medioy))
+		resx.append(mediox+(1.65388814151*(len(listax)-1)**(-.151604148771))*(listax[cont]-mediox))
+		resy.append(medioy+(1.65388814151*(len(listax)-1)**(-.151604148771))*(listay[cont]-medioy))
 		cont+=1
 	return resx, resy
 
 #método main que operacionaliza os cálculos
-plt.xlabel('x')
-plt.ylabel('y')
-print("valores iniciais em x:")
-listax=input().split(", ")
-cont=0
-while cont<len(listax):
-	listax[cont]=float(listax[cont])
-	cont+=1
-print("valores iniciais em y:")
-listay=input().split(", ")
-cont=0
-while cont<len(listay):
-	listay[cont]=float(listay[cont])
-	cont+=1
-plt.plot(listax, listay)
-listax, listay=corrige(listax, listay)
-if listax[0]==listax[-1] and listay[0]==listay[-1]:
-	eh_fechado=True
-else:
-	eh_fechado=False
-print("insira o número de iterações:")
-n=int(input())
-cont=0
-while cont<n:
-	listax=quebra(listax)
-	listay=quebra(listay)
-	listax=roda(listax, eh_fechado)
-	listay=roda(listay, eh_fechado)
-	cont+=1
-plt.plot(listax, listay)
-plt.show()
+def smooth(listax, listay, n=0):
+	plt.xlabel('x')
+	plt.ylabel('y')
+	cont=0
+	while cont<len(listax):
+		listax[cont]=float(listax[cont])
+		listay[cont]=float(listay[cont])
+		cont+=1
+	plt.plot(listax, listay)
+	listax, listay=corrige(listax, listay)
+	#plt.plot(listax, listay)
+	if listax[0]==listax[-1] and listay[0]==listay[-1]:
+		eh_fechado=True
+	else:
+		eh_fechado=False
+	cont=0
+	while cont<n:
+		listax=quebra(listax)
+		listay=quebra(listay)
+		listax=roda(listax, eh_fechado)
+		listay=roda(listay, eh_fechado)
+		cont+=1
+	plt.plot(listax, listay)
+	plt.show()
