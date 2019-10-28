@@ -1,7 +1,7 @@
 import serial
-def read():
-	''''''
-	port=serial.Serial('COM5')#completar o diretorio da porta
+def read(directory):
+	'''(str)->list'''
+	port=serial.Serial(directory)
 	port.flushInput()
 	dados=[]
 	while True:
