@@ -1,4 +1,5 @@
 import serial
+#referencia em https://makersportal.com/blog/2018/2/25/python-datalogger-reading-the-serial-output-from-arduino-to-analyze-data-using-pyserial
 def read(directory):
 	'''(str)->list'''
 	port=serial.Serial(directory)
