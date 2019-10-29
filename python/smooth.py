@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import sys
 #este método recebe uma lista de inteiros e cria pontos médios nas suas arestas
 def quebra(lista):
@@ -31,42 +30,40 @@ def roda(lista, eh_fechado):
 		res.pop()
 	return res
 #este método corrige os pontos para que os valores de entrada estejam na configuração final do desenho
-def corrige(listax, listay):
+def corrige(listax, listay, eh_fechado):
 	'''(list, list)->list, list'''
 	resx=[]
 	resy=[]
 	mediox=0
 	medioy=0
 	cont=0
-	while cont<len(listax)-1:
+	n=len(listax)
+	if eh_fechado:n-=1
+	while cont<n:
 		mediox+=listax[cont]
 		medioy+=listay[cont]
 		cont+=1
-	mediox/=(len(listax)-1)
-	medioy/=(len(listax)-1)
+	mediox/=n
+	medioy/=n
 	cont=0
 	while cont<len(listax):
-		resx.append(mediox+(1.65388814151*(len(listax)-1)**(-.151604148771))*(listax[cont]-mediox))
-		resy.append(medioy+(1.65388814151*(len(listax)-1)**(-.151604148771))*(listay[cont]-medioy))
+		resx.append(mediox+(1.65388814151*n**(-.151604148771))*(listax[cont]-mediox))
+		resy.append(medioy+(1.65388814151*n**(-.151604148771))*(listay[cont]-medioy))
 		cont+=1
 	return resx, resy
 
 #método main que operacionaliza os cálculos
 def smooth(listax, listay, n=0):
-	plt.xlabel('x')
-	plt.ylabel('y')
 	cont=0
 	while cont<len(listax):
 		listax[cont]=float(listax[cont])
 		listay[cont]=float(listay[cont])
 		cont+=1
-	plt.plot(listax, listay)
-	listax, listay=corrige(listax, listay)
-	#plt.plot(listax, listay)
 	if listax[0]==listax[-1] and listay[0]==listay[-1]:
 		eh_fechado=True
 	else:
 		eh_fechado=False
+	listax, listay=corrige(listax, listay, eh_fechado)
 	cont=0
 	while cont<n:
 		listax=quebra(listax)
@@ -74,5 +71,4 @@ def smooth(listax, listay, n=0):
 		listax=roda(listax, eh_fechado)
 		listay=roda(listay, eh_fechado)
 		cont+=1
-	plt.plot(listax, listay)
-	plt.show()
+	return listax, listay
