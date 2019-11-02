@@ -1,4 +1,7 @@
 import math
+
+#conversores de coordenadas
+
 #conversor de coordenadas retangular para polar
 	#coordenada de entrada: x e y
 	#coordenadas de sáida polar: r e theta
@@ -19,4 +22,26 @@ def cordinates_polar(r, theta):
 	x=r*math.cos(theta)
 	y=r*math.sin(theta)
 	res.append((x, y))
+	return res
+
+#conversores de angulos
+
+#conversor de angulo graus para radiano
+	#entrada: thetag
+	#saida: thetar
+def angle_degree(thetag):
+	'''(float)->float'''
+	res=[]
+	thetar=math.pi*thetag/180
+	res.append(thetar)
+	return res
+
+#conversor de ngulo radiano para graus
+	#entrada: thetar
+	#saida:thetag
+def angle_rad(thetar):
+	'''(float)->float'''
+	res=[]
+	thetag=thetar*180/math.pi
+	res.append(thetag)
 	return res
