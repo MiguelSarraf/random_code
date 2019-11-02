@@ -1,6 +1,6 @@
 #referencia em https://makersportal.com/blog/2018/2/25/python-datalogger-reading-the-serial-output-from-arduino-to-analyze-data-using-pyserial
 import serial
-def read(directory, baudrate=1200, databits=serial.SEVENBITS, parity=serial.PARITY_EVEN, stopbits=serial.STOPBITS_TWO):
+def read(directory, eot=0x00000100, baudrate=1200, databits=serial.SEVENBITS, parity=serial.PARITY_EVEN, stopbits=serial.STOPBITS_TWO):
 	'''(str, int, bit_count, bit_parity, bit_count)->list'''
 	port=serial.Serial(directory, baudrate, databits, parity, stopbits)
 	port.flushInput()
@@ -16,7 +16,7 @@ def read(directory, baudrate=1200, databits=serial.SEVENBITS, parity=serial.PARI
 			print("error during read")
 			cont+=1
 		dados.append(leitura)
-		if dados[-1]==0x00000100:
+		if dados[-1]==eot:
 			dados.pop()
 			break
 		cont+=1
