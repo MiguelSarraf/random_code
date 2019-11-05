@@ -12,14 +12,11 @@ import smooth
 from numpy import *
 import pylab as graph
 import mpl_toolkits.mplot3d.axes3d as axes
+import tkinter as tk
+from tkinter import StringVar
 
 #definicao das variaveis do grafico
 fig=graph.figure()
-ax=axes.Axes3D(fig)
-ax.set_xlabel("x")
-ax.set_ylabel("y")
-ax.set_zlabel("z")
-fig.add_axes(ax)
 
 #esta função le os dados seriais, confere sua validade e retorna os valores de angulo e distancia
 def recebe(port):
@@ -114,3 +111,57 @@ def modela(port, n_niveis=1, n_angulos=18, n_redund=3, n_itera=5, color="gray"):
 	#plota o grafico
 	superf=plota(curvas, color)
 	superf.show()
+
+#codigo principal que gera a interface grafica
+win=tk.Tk()
+win.title("ModelaDor 3D")
+win.geometry("500x500")
+modelcolor = StringVar(win)
+modelcolor.set("black") # default value
+labeli=tk.Label(win, text="Bem vindo ao ModelaDor 3D, insira os parâmetros necessários e clique 'Modelar'", height=3, wraplength=450)
+labelport=tk.Label(win, text="Porta COM (apenas número):", height=3)
+port=tk.Spinbox(win, from_=0, to=20)
+labellevel=tk.Label(win, text="Número de níveis que a serem amostrados:", height=3, wraplength=200)
+level=tk.Spinbox(win, from_=1, to=18)
+labelang=tk.Label(win, text="Número de ângulos a serem amostrados:", height=3)
+ang=tk.Spinbox(win, from_=18, to=19)
+labelredund=tk.Label(win, text="Número de medições por ângulo:", height=3)
+redund=tk.Spinbox(win, from_=1, to=10)
+labelitera=tk.Label(win, text="Número de iterações de suavização:", height=3)
+itera=tk.Spinbox(win, from_=0, to=15)
+labelcolor=tk.Label(win, text="Cor das linhas do modelo:", height=3)
+color=tk.OptionMenu(win, modelcolor, "blue", "red", "green", "gray", "yellow", "black")
+butc=tk.Button(win, text="Cancelar", width=20, command=win.destroy)
+butm=tk.Button(win, text="Modelar", width=20, command=modela("COM"+port.get(), int(level.get()), int(ang.get()), int(redund.get()), int(itera.get()), modelcolor))
+labeli.pack()
+labeli.place(anchor="n",relx=.5)
+butc.pack()
+butc.place(anchor="sw",relx=.05, rely=.95)
+butm.pack()
+butm.place(anchor="se", relx=.95, rely=.95)
+labelport.pack()
+labelport.place(anchor="nw", relx=.05, rely=.095)
+port.pack()
+port.place(anchor="nw", relx=.6, rely=.13)
+labellevel.pack()
+labellevel.place(anchor="nw", relx=.05, rely=.2)
+level.pack()
+level.place(anchor="nw", relx=.6, rely=.24)
+labelang.pack()
+labelang.place(anchor="nw", relx=.05, rely=.315)
+ang.pack()
+ang.place(anchor="nw", relx=.6, rely=.35)
+labelredund.pack()
+labelredund.place(anchor="nw", relx=.05, rely=.425)
+redund.pack()
+redund.place(anchor="nw", relx=.6, rely=.46)
+labelitera.pack()
+labelitera.place(anchor="nw", relx=.05, rely=.535)
+itera.pack()
+itera.place(anchor="nw", relx=.6, rely=.57)
+labelcolor.pack()
+labelcolor.place(anchor="nw", relx=.05, rely=.655)
+color.pack()
+color.place(anchor="nw", relx=.6, rely=.68)
+
+win.mainloop()
