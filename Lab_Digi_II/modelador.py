@@ -24,10 +24,14 @@ def recebe(port):
 	#recepcao de dados
 	dados=data.read(port, ".", 300)
 	#conferencia de validade
-	valid=["0","1","2","3","4","5","6","7","8","9",]
+	valid=["0","1","2","3","4","5","6","7","8","9"]
 	if len(dados)!=7 or not(dados[0] in valid) or not(dados[1] in valid) or not(dados[2] in valid) or dados[3]!="," or not(dados[4] in valid) or not(dados[5] in valid) or not(dados[6] in valid):
 		print("invalid data received")
-		return
+		if len(dados)>=3 and dados[-1] in valid and dados[-2] in valid and dados[-3] in valid:
+			angulo=-1
+			distancia=int(leitura[4]+leitura[5]+leitura[6])//10
+			return angulo, distancia
+		return -2, 0
 	#criacao dos valores de angulo e distancia
 	angulo=int(leitura[0]+leitura[1]+leitura[2])
 	distancia=int(leitura[4]+leitura[5]+leitura[6])//10
@@ -89,6 +93,8 @@ def modela(port, n_niveis=1, n_angulos=18, n_redund=3, n_itera=5, color="gray"):
 		#iteracao para leituras pontuais
 		while medida<n_medidas:
 			angulo, distancia=recebe(port)
+			if angulo==-1:
+				angulo=angulos[-1]
 			angulos.append(angulo)
 			distancias.append(distancia)
 			medida+=1
@@ -97,12 +103,18 @@ def modela(port, n_niveis=1, n_angulos=18, n_redund=3, n_itera=5, color="gray"):
 			somaa=0
 			somad=0
 			cont=0
+			n=0
 			while cont<n_redund:
-				somaa+=angulos.pop(0)
-				somad+=distancias.pop(0)
+				if angulos[-1]==-2:
+					angulos.pop()
+					distancias.pop()
+				else:
+					somaa+=angulos.pop(0)
+					somad+=distancias.pop(0)
+					n+=1
 				cont+=1
-			somaa/=n_redund
-			somad/=n_redund
+			somaa/=n
+			somad/=n
 		#converte os valores
 		x, y=converte(angulos, distancias)
 		#suaviza a curva
