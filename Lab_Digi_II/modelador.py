@@ -24,7 +24,8 @@ def recebe(port):
 	#recepcao de dados
 	dados=data.read(port, ".", 300)
 	#conferencia de validade
-	if len(dados)!=7 or type(dados[0])!=int or type(dados[1])!=int or type(dados[2])!=int or dados[3]!="," or type(dados[4])!=int or type(dados[5])!=int or type(dados[6])!=int:
+	valid=["0","1","2","3","4","5","6","7","8","9",]
+	if len(dados)!=7 or not(dados[0] in valid) or not(dados[1] in valid) or not(dados[2] in valid) or dados[3]!="," or not(dados[4] in valid) or not(dados[5] in valid) or not(dados[6] in valid):
 		print("invalid data received")
 		return
 	#criacao dos valores de angulo e distancia
@@ -100,8 +101,8 @@ def modela(port, n_niveis=1, n_angulos=18, n_redund=3, n_itera=5, color="gray"):
 				somaa+=angulos.pop(0)
 				somad+=distancias.pop(0)
 				cont+=1
-			somaa.append(somaa/n_redund)
-			somad.append(somad/n_redund)
+			somaa/=n_redund
+			somad/=n_redund
 		#converte os valores
 		x, y=converte(angulos, distancias)
 		#suaviza a curva
