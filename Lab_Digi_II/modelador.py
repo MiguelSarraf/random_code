@@ -14,6 +14,7 @@ import pylab as graph
 import mpl_toolkits.mplot3d.axes3d as axes
 import tkinter as tk
 from tkinter import StringVar
+import glob
 
 #definicao das variaveis do grafico
 fig=graph.figure()
@@ -130,10 +131,11 @@ win=tk.Tk()
 win.title("ModelaDor 3D")
 win.geometry("500x500")
 modelcolor = StringVar(win)
+porta=StringVar(win)
 modelcolor.set("gray") # default value
 labeli=tk.Label(win, text="Bem vindo ao ModelaDor 3D, insira os parâmetros necessários e clique 'Modelar'", height=3, wraplength=450)
 labelport=tk.Label(win, text="Porta utilizada para comunicação:", height=3)
-port=tk.Entry(win)
+port=tk.OptionMenu(win, porta, *glob.glob('/dev/tty[A-Za-z]*'))
 labellevel=tk.Label(win, text="Número de níveis que a serem amostrados:", height=3, wraplength=200)
 level=tk.Spinbox(win, from_=1, to=18)
 labelang=tk.Label(win, text="Número de ângulos sendo amostrados:", height=3)
@@ -145,7 +147,7 @@ itera=tk.Spinbox(win, from_=0, to=15)
 labelcolor=tk.Label(win, text="Cor das linhas do modelo:", height=3)
 color=tk.OptionMenu(win, modelcolor, "red", "green", "blue", "white", "black", "gray")
 butc=tk.Button(win, text="Cancelar", width=20, command=win.destroy)
-butm=tk.Button(win, text="Modelar", width=20, command=lambda:modela(port.get(), int(level.get()), int(ang.get()), int(redund.get()), int(itera.get()), modelcolor))
+butm=tk.Button(win, text="Modelar", width=20, command=lambda:modela(str(porta), int(level.get()), int(ang.get()), int(redund.get()), int(itera.get()), modelcolor))
 labeli.pack()
 labeli.place(anchor="n",relx=.5)
 butc.pack()
