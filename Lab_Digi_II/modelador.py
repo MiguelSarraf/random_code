@@ -15,6 +15,7 @@ import mpl_toolkits.mplot3d.axes3d as axes
 import tkinter as tk
 from tkinter import StringVar
 import glob
+import sys
 
 #definicao das variaveis do grafico
 fig=graph.figure()
@@ -127,6 +128,15 @@ def modela(port, n_niveis=1, n_angulos=18, n_redund=3, n_itera=5, color="gray"):
 	superf.show()
 
 #codigo principal que gera a interface grafica
+if sys.platform.startswith('win'):
+    ports = ['COM%s' % (i + 1) for i in range(256)]
+elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+    ports = glob.glob('/dev/tty[A-Za-z]*')
+elif sys.platform.startswith('darwin'):
+    ports = glob.glob('/dev/tty.*')
+else:
+	print("unknown platform")
+	exit()
 win=tk.Tk()
 win.title("ModelaDor 3D")
 win.geometry("500x500")
@@ -135,7 +145,7 @@ porta=StringVar(win)
 modelcolor.set("gray") # default value
 labeli=tk.Label(win, text="Bem vindo ao ModelaDor 3D, insira os parâmetros necessários e clique 'Modelar'", height=3, wraplength=450)
 labelport=tk.Label(win, text="Porta utilizada para comunicação:", height=3)
-port=tk.OptionMenu(win, porta, *glob.glob('/dev/tty[A-Za-z]*'))
+port=tk.OptionMenu(win, porta, *ports)
 labellevel=tk.Label(win, text="Número de níveis que a serem amostrados:", height=3, wraplength=200)
 level=tk.Spinbox(win, from_=1, to=18)
 labelang=tk.Label(win, text="Número de ângulos sendo amostrados:", height=3)
