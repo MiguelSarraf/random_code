@@ -127,7 +127,7 @@ def modela(port, n_niveis=1, n_angulos=18, n_redund=3, n_itera=5, color="gray"):
 	superf=plota(curvas, color)
 	superf.show()
 
-#codigo principal que gera a interface grafica
+#define uma lista com as portas ativas que podem ser utilizadas
 if sys.platform.startswith('win'):
     ports = ['COM%s' % (i + 1) for i in range(256)]
 elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
@@ -137,6 +137,8 @@ elif sys.platform.startswith('darwin'):
 else:
 	print("unknown platform")
 	exit()
+
+#codigo principal que gera a interface grafica
 win=tk.Tk()
 win.title("ModelaDor 3D")
 win.geometry("500x500")
