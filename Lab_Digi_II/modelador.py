@@ -31,12 +31,12 @@ def recebe(port):
 		print("invalid data received")
 		if len(dados)>=3 and dados[-1] in valid and dados[-2] in valid and dados[-3] in valid:
 			angulo=-1
-			distancia=int(leitura[4]+leitura[5]+leitura[6])//10
+			distancia=int(leitura[-3]+leitura[-2]+leitura[-1])//10
 			return angulo, distancia
 		return -2, 0
 	#criacao dos valores de angulo e distancia
 	angulo=int(leitura[0]+leitura[1]+leitura[2])
-	distancia=int(leitura[4]+leitura[5]+leitura[6])//10
+	distancia=15-int(leitura[4]+leitura[5]+leitura[6])//10
 	#conversao do angulo para radianos
 	angulo=conversor.angle_degree(angulo)[0]
 	#retorno
@@ -117,6 +117,8 @@ def modela(port, n_niveis=1, n_angulos=18, n_redund=3, n_itera=5, color="gray"):
 				cont+=1
 			somaa/=n
 			somad/=n
+			angulos.append(somaa)
+			distancias.append(somad)
 		#converte os valores
 		x, y=converte(angulos, distancias)
 		#suaviza a curva
