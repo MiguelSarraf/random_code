@@ -16,9 +16,11 @@ import tkinter as tk
 from tkinter import StringVar
 import glob
 import sys
+import time
 
 #definicao das variaveis do grafico
-fig=graph.figure()
+fig=graph.figure(	)
+ax=graph.axes(projection='3d')
 
 #esta função le os dados seriais, confere sua validade e retorna os valores de angulo e distancia
 def recebe(port):
@@ -89,6 +91,9 @@ def modela(port, n_niveis=1, n_angulos=18, n_redund=3, n_itera=5, color="gray"):
 	nivel=0
 	curvas=[]
 	while nivel<n_niveis:
+		texto="STATUS: iniciando modelagem do nível "+str(nivel)
+		labelinfo.configure(text=texto)
+		labelinfo.update()
 		medida=0
 		angulos=[]
 		distancias=[]
@@ -124,9 +129,21 @@ def modela(port, n_niveis=1, n_angulos=18, n_redund=3, n_itera=5, color="gray"):
 		#suaviza a curva
 		x, y=smooth.smooth(x, y, n_itera)
 		curvas.append([x, y])
+		if(nivel!=n_niveis-1):
+			texto="STATUS: nível "+str(nivel)+" modelado, ajuste pŕoximo nível"
+			labelinfo.configure(text=texto)
+			labelinfo.update()
+			time.sleep(5)
+		else:
+			texto="STATUS: último nível modelado"
+			labelinfo.configure(text=texto)
+			labelinfo.update()
 		nivel +=1
 	#plota o grafico
 	superf=plota(curvas, color)
+	texto="STATUS: modelagem pronta, mostrando resultado"
+	labelinfo.configure(text=texto)
+	labelinfo.update()
 	superf.show()
 
 #define uma lista com as portas ativas que podem ser utilizadas
@@ -160,8 +177,9 @@ labelitera=tk.Label(win, text="Número de iterações de suavização:", height=
 itera=tk.Spinbox(win, from_=0, to=15)
 labelcolor=tk.Label(win, text="Cor das linhas do modelo:", height=3)
 color=tk.OptionMenu(win, modelcolor, "red", "green", "blue", "white", "black", "gray")
+labelinfo=tk.Label(win, text="STATUS: aguardando modelagem", height=3)
 butc=tk.Button(win, text="Cancelar", width=20, command=win.destroy)
-butm=tk.Button(win, text="Modelar", width=20, command=lambda:modela(str(porta), int(level.get()), int(ang.get()), int(redund.get()), int(itera.get()), modelcolor))
+butm=tk.Button(win, text="Modelar", width=20, command=lambda:modela(porta.get(), int(level.get()), int(ang.get()), int(redund.get()), int(itera.get()), modelcolor.get()))
 labeli.pack()
 labeli.place(anchor="n",relx=.5)
 butc.pack()
@@ -192,4 +210,6 @@ labelcolor.pack()
 labelcolor.place(anchor="nw", relx=.05, rely=.655)
 color.pack()
 color.place(anchor="nw", relx=.6, rely=.68)
+labelinfo.pack()
+labelinfo.place(anchor="n", relx=.5, rely=.75)
 win.mainloop()
