@@ -1,3 +1,4 @@
+//potencias
 double potencia_expoente_inteiro(double base, int expoente){
 	double res;
 	res=1;
@@ -5,60 +6,6 @@ double potencia_expoente_inteiro(double base, int expoente){
 		res=res*base;
 		expoente--;
 	}
-	return res;
-}
-double raiz(double base, int radicando){
-	if(radicando==1||base==1){
-		return base;
-	}
-	double res, potencia;
-	res=base;
-	potencia=potencia_expoente_inteiro(res, radicando);
-	while(potencia>base){
-		res=res/2;
-		potencia=potencia_expoente_inteiro(res, radicando);
-	}
-	while(potencia<base){
-		res++;
-		potencia=potencia_expoente_inteiro(res, radicando);
-	}
-	res--;
-	potencia=potencia_expoente_inteiro(res, radicando);
-	while(potencia<base){
-		res=res+0.1;
-		potencia=potencia_expoente_inteiro(res, radicando);
-	}
-	res=res-0.1;
-	potencia=potencia_expoente_inteiro(res, radicando);
-	while(potencia<base){
-		res=res+0.01;
-		potencia=potencia_expoente_inteiro(res, radicando);
-	}
-	res=res-0.01;
-	potencia=potencia_expoente_inteiro(res, radicando);
-	while(potencia<base){
-		res=res+0.001;
-		potencia=potencia_expoente_inteiro(res, radicando);
-	}
-	res=res-0.001;
-	potencia=potencia_expoente_inteiro(res, radicando);
-	while(potencia<base){
-		res=res+0.0001;
-		potencia=potencia_expoente_inteiro(res, radicando);
-	}
-	res=res-0.0001;
-	potencia=potencia_expoente_inteiro(res, radicando);
-	while(potencia<base){
-		res=res+0.00001;
-		potencia=potencia_expoente_inteiro(res, radicando);
-	}
-	res=res-0.00001;
-	potencia=potencia_expoente_inteiro(res, radicando);
-	while(potencia<base){
-		res=res+0.000001;
-		potencia=potencia_expoente_inteiro(res, radicando);
-	}
-	res=res-0.000001;
 	return res;
 }
 double potencia(double base, double expoente){
@@ -81,6 +28,8 @@ double potencia(double base, double expoente){
 	res=res*raiz(res1, 10);
 	return res;
 }
+
+//matrizes
 double determinante(double matriz[10][10], int n){
 	double matrizaux[10][10], res;
 	int cont, contt, conttt;
@@ -114,7 +63,9 @@ double determinante(double matriz[10][10], int n){
 		return res;
 	}
 }
-void sort(double vet[], int esq, int dir){
+
+//sort
+void quick_sort(double vet[], int esq, int dir){
 	if(dir>esq){
 		int param, cont, aux;
 		param=esq;
@@ -161,19 +112,4 @@ void sort(double vet[], int esq, int dir){
 	}else{
 		return;
 	}
-}
-#define NMAX 100
-#include<stdlib.h>
-double pi(){
-	int cont;
-	double res;
-	cont=100;
-	res=0;
-	while(cont>0){
-		res=res+potencia(-1, cont+1)/(2*cont-1);
-		cont--;
-	}
-	res=res*4;
-	//res=raiz(res, 2);
-	return res;
 }
