@@ -6,11 +6,12 @@
 //functions
 double modulo(double num);
 double potencia_expoente_inteiro(double base, int expoente);
+double potencia(double base, double expoente);
 double raiz_enesima(double base, int n);
 double* derivate_pol_eq(double indices[NMAX]);
 double valor_pol_eq_no_pt(double indices[NMAX], double valor);
 double* raiz_da_equacao_pol(double indices[NMAX]);
-double determinante(double matriz[10][10], int n);
+double determinante(double matriz[NMAX][NMAX], int n);
 void quick_sort(double vet[NMAX], int esq, int dir);
 
 //numeros
@@ -23,6 +24,7 @@ double modulo(double num){
 double potencia_expoente_inteiro(double base, int expoente){
 	double res;
 	res=1;
+	//multiplica a base por si mesma expoente vezes (necessariamente um inteiro)
 	while(expoente>0){
 		res=res*base;
 		expoente--;
@@ -32,6 +34,7 @@ double potencia_expoente_inteiro(double base, int expoente){
 double raiz_enesima(double base, int n){
 	int cont;
 	double ind[NMAX];
+	//cria vetor com -base na posicao inicial e 1 na posição n
 	ind[0]=(-1)*base;
 	cont=1;
 	while(cont<NMAX){
@@ -39,6 +42,7 @@ double raiz_enesima(double base, int n){
 		cont++;
 	}
 	ind[n]=1;
+	//a raiz do polinômio representado pelo vetor equivale a raiz n-sima de base
 	return *raiz_da_equacao_pol(ind);
 }
 
@@ -47,6 +51,7 @@ double* derivate_pol_eq(double indices[NMAX]){
 	static double deriv[NMAX];
 	int cont;
 	cont=0;
+	//determina o coeficiente da derivada pela regra do tombo
 	while(cont<NMAX-1){
 		deriv[cont]=indices[cont+1]*(cont+1);
 		cont++;
@@ -60,6 +65,7 @@ double valor_pol_eq_no_pt(double indices[NMAX], double valor){
 	static double res;
 	cont=0;
 	res=0;
+	//soma cada uma das parcelas monômicas 
 	while(cont<NMAX){
 		res+=indices[cont]*potencia_expoente_inteiro(valor, cont);
 		cont++;
@@ -68,9 +74,11 @@ double valor_pol_eq_no_pt(double indices[NMAX], double valor){
 }
 
 double* raiz_da_equacao_pol(double indices[NMAX]){
+	//método de Newton
 	double *deriv=derivate_pol_eq(indices);
 	static double x0=0.5;
 	double x0ant=1, funcval, tang;
+	//determina o novo valor de x0 baseado no valor da função e da derivada em x0 enquanto x0 e x0ant forem demasiado distantes
 	while(modulo(x0-x0ant)>ERRO){
 		x0ant=x0;
 		funcval=valor_pol_eq_no_pt(indices, x0);
