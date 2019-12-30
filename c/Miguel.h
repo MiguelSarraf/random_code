@@ -1,3 +1,24 @@
+#define NMAX 100
+#define ERRO 0.000001
+
+#include <stdio.h>
+
+//functions
+double modulo(double num);
+double potencia_expoente_inteiro(double base, int expoente);
+double raiz_enesima(double base, int n);
+double* derivate_pol_eq(double indices[NMAX]);
+double valor_pol_eq_no_pt(double indices[NMAX], double valor);
+double* raiz_da_equacao_pol(double indices[NMAX]);
+double determinante(double matriz[10][10], int n);
+void quick_sort(double vet[NMAX], int esq, int dir);
+
+//numeros
+double modulo(double num){
+	if(num<0) return (-1)*num;
+	return num;
+}
+
 //potencias
 double potencia_expoente_inteiro(double base, int expoente){
 	double res;
@@ -8,25 +29,56 @@ double potencia_expoente_inteiro(double base, int expoente){
 	}
 	return res;
 }
-double potencia(double base, double expoente){
-	if(expoente==1){
-		return base;
+double raiz_enesima(double base, int n){
+	int cont;
+	double ind[NMAX];
+	ind[0]=(-1)*base;
+	cont=1;
+	while(cont<NMAX){
+		ind[cont]=0;
+		cont++;
 	}
-	double res, res1;
-	res=1;
-	if(base<0){
-		if((int)expoente!=expoente){
-			return 0;
-		}
-		base=-base;
-		if((int)expoente%2==1){
-			res=-1;
-		}
+	ind[n]=1;
+	return *raiz_da_equacao_pol(ind);
+}
+
+//equacoes
+double* derivate_pol_eq(double indices[NMAX]){
+	static double deriv[NMAX];
+	int cont;
+	cont=0;
+	while(cont<NMAX-1){
+		deriv[cont]=indices[cont+1]*(cont+1);
+		cont++;
 	}
-	expoente=expoente*10;
-	res1=potencia_expoente_inteiro(base, (int)expoente);
-	res=res*raiz(res1, 10);
+	deriv[NMAX]=0;
+	return deriv;
+}
+
+double valor_pol_eq_no_pt(double indices[NMAX], double valor){
+	int cont;
+	static double res;
+	cont=0;
+	res=0;
+	while(cont<NMAX){
+		res+=indices[cont]*potencia_expoente_inteiro(valor, cont);
+		cont++;
+	}
 	return res;
+}
+
+double* raiz_da_equacao_pol(double indices[NMAX]){
+	double *deriv=derivate_pol_eq(indices);
+	static double x0=0.5;
+	double x0ant=1, funcval, tang;
+	while(modulo(x0-x0ant)>ERRO){
+		x0ant=x0;
+		funcval=valor_pol_eq_no_pt(indices, x0);
+		tang=valor_pol_eq_no_pt(deriv, x0);
+		x0=x0-funcval/tang;	
+		//printf("%f %f %f %f\n", x0ant, x0, funcval, tang);
+	}
+	return &x0;
 }
 
 //matrizes
@@ -57,7 +109,7 @@ double determinante(double matriz[10][10], int n){
 				}
 				contt++;
 			}
-			res=res+potencia(-1,cont)*matriz[0][cont]*determinante(matrizaux, n-1);
+			//res=res+potencia(-1,cont)*matriz[0][cont]*determinante(matrizaux, n-1);
 			cont++;
 		}
 		return res;
@@ -106,8 +158,8 @@ void quick_sort(double vet[], int esq, int dir){
 			cont++;
 		}
 		cont=0;
-		sort(vet, esq, param);
-		sort(vet, param+1, dir);
+		quick_sort(vet, esq, param);
+		quick_sort(vet, param+1, dir);
 		return;
 	}else{
 		return;
