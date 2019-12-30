@@ -45,6 +45,28 @@ double raiz_enesima(double base, int n){
 	//a raiz do polinômio representado pelo vetor equivale a raiz n-sima de base
 	return *raiz_da_equacao_pol(ind);
 }
+double potencia(double base, double expoente){
+	//se o expoente for inteiro reduz-se o problema à função potencia_expoente_inteiro()
+	if((int)expoente==expoente){
+		return potencia_expoente_inteiro(base, (int)expoente);
+	}
+	int part_int, nominador, denominador;
+	double part_frac, res;
+	//separa o expoente na prte inteira e fracionária
+	part_int=(int)expoente;
+	part_frac=expoente-(double)part_int;
+	//transforma a parte fracionária em denominador=NMAX-1 e nominador equivalente
+	denominador=NMAX-1;
+	nominador=(int)(part_frac*(double)denominador);
+	//printf("%d %d %d\n", part_int, nominador, denominador);
+	//calcula cada uma das partes e multiplica
+	res=1;
+	res*=potencia_expoente_inteiro(raiz_enesima(base, denominador), nominador);
+	//printf("%f %f\n", raiz_enesima(base, denominador), res);
+	res*=potencia_expoente_inteiro(base, part_int);
+	//printf("%f\n", res);
+	return res;
+}
 
 //equacoes
 double* derivate_pol_eq(double indices[NMAX]){
@@ -76,7 +98,7 @@ double valor_pol_eq_no_pt(double indices[NMAX], double valor){
 double* raiz_da_equacao_pol(double indices[NMAX]){
 	//método de Newton
 	double *deriv=derivate_pol_eq(indices);
-	static double x0=0.5;
+	static double x0=5;
 	double x0ant=1, funcval, tang;
 	//determina o novo valor de x0 baseado no valor da função e da derivada em x0 enquanto x0 e x0ant forem demasiado distantes
 	while(modulo(x0-x0ant)>ERRO){
@@ -90,7 +112,7 @@ double* raiz_da_equacao_pol(double indices[NMAX]){
 }
 
 //matrizes
-double determinante(double matriz[10][10], int n){
+double determinante(double matriz[NMAX][NMAX], int n){
 	double matrizaux[10][10], res;
 	int cont, contt, conttt;
 	res=0;
