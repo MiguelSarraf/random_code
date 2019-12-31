@@ -1,7 +1,9 @@
-#define NMAX 100
+#define NMAX 1000
 #define ERRO 0.000001
 
 #include <stdio.h>
+
+int errno=0;
 
 //functions
 double modulo(double num);
@@ -11,6 +13,7 @@ double raiz_enesima(double base, int n);
 double* derivate_pol_eq(double indices[NMAX]);
 double valor_pol_eq_no_pt(double indices[NMAX], double valor);
 double raiz_da_equacao_pol(double indices[NMAX], double x0);
+double* fatoracao_por_monomio(double indices[NMAX], double raiz);
 double determinante(double matriz[NMAX][NMAX], int n);
 void quick_sort(double vet[NMAX], int esq, int dir);
 
@@ -81,7 +84,6 @@ double* derivate_pol_eq(double indices[NMAX]){
 	deriv[NMAX]=0;
 	return deriv;
 }
-
 double valor_pol_eq_no_pt(double indices[NMAX], double valor){
 	int cont;
 	static double res;
@@ -94,7 +96,6 @@ double valor_pol_eq_no_pt(double indices[NMAX], double valor){
 	}
 	return res;
 }
-
 double raiz_da_equacao_pol(double indices[NMAX], double x0){
 	//método de Newton
 	double *deriv=derivate_pol_eq(indices);
@@ -111,6 +112,26 @@ double raiz_da_equacao_pol(double indices[NMAX], double x0){
 		//printf("%f %f %f %f\n", x0ant, x0, funcval, tang);
 	}
 	return x0;
+}
+double* fatoracao_por_monomio(double indices[NMAX], double raiz){
+	//método de Briot-Ruffini
+	static double divisao[NMAX];
+	int cont;
+	cont=0;
+	while(cont<NMAX){
+		divisao[NMAX]=0;
+		cont++;
+	}
+	//cont=NMAX
+	//os índices do de maior grau são iguais na original e na dividida
+	divisao[cont-1]=indices[cont];
+	cont--;
+	//cada novo elemento é igual ao de ordem maior original somado ao de ordem maior dividido multiplicado pela raiz
+	while(cont>0){
+		divisao[cont-1]=indices[cont]+divisao[cont]*raiz;
+		cont--;
+	}
+	return divisao;
 }
 
 //matrizes
