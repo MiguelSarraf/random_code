@@ -1,20 +1,24 @@
-#define NMAX 1000
+#define NMAX 100
 #define ERRO 0.000001
 
 #include <stdio.h>
 
-int errno=0;
-
-//functions
+//funções
 double modulo(double num);
+
 double potencia_expoente_inteiro(double base, int expoente);
 double potencia(double base, double expoente);
 double raiz_enesima(double base, int n);
+
+int grau_pol_eq(double indices[NMAX]);
 double* derivate_pol_eq(double indices[NMAX]);
 double valor_pol_eq_no_pt(double indices[NMAX], double valor);
 double raiz_da_equacao_pol(double indices[NMAX], double x0);
 double* fatoracao_por_monomio(double indices[NMAX], double raiz);
+double* raizes_da_equacao_pol(double indices[NMAX]);
+
 double determinante(double matriz[NMAX][NMAX], int n);
+
 void quick_sort(double vet[NMAX], int esq, int dir);
 
 //numeros
@@ -72,6 +76,15 @@ double potencia(double base, double expoente){
 }
 
 //equacoes
+int grau_pol_eq(double indices[NMAX]){
+	int cont;
+	cont=NMAX-1;
+	while(cont>1){
+		if(indices[cont]!=0.0) return cont;
+		cont--;
+	}
+	return 0;
+}
 double* derivate_pol_eq(double indices[NMAX]){
 	static double deriv[NMAX];
 	int cont;
@@ -116,22 +129,45 @@ double raiz_da_equacao_pol(double indices[NMAX], double x0){
 double* fatoracao_por_monomio(double indices[NMAX], double raiz){
 	//método de Briot-Ruffini
 	static double divisao[NMAX];
-	int cont;
+	double copia_indices[NMAX];
+	int cont, n;
 	cont=0;
 	while(cont<NMAX){
-		divisao[NMAX]=0;
+		copia_indices[cont]=indices[cont];
 		cont++;
 	}
-	//cont=NMAX
+	cont=0;
+	while(cont<NMAX){
+		n=grau_pol_eq(copia_indices);
+		//printf("o grau que chegou é %d\n", n);
+		//printf("indices q chegou: %f %f %f %f\n", copia_indices[0], copia_indices[1], copia_indices[2], copia_indices[3]);
+		divisao[cont]=0;
+		cont++;
+	}
+	cont=n;
 	//os índices do de maior grau são iguais na original e na dividida
-	divisao[cont-1]=indices[cont];
+	divisao[cont-1]=copia_indices[cont];
 	cont--;
 	//cada novo elemento é igual ao de ordem maior original somado ao de ordem maior dividido multiplicado pela raiz
 	while(cont>0){
-		divisao[cont-1]=indices[cont]+divisao[cont]*raiz;
+		divisao[cont-1]=copia_indices[cont]+divisao[cont]*raiz;
 		cont--;
 	}
 	return divisao;
+}
+double* raizes_da_equacao_pol(double indices[NMAX]){
+	static double raizes[NMAX];
+	int cont, n;
+	n=grau_pol_eq(indices);
+	//printf("%d %f %f %f %f\n", grau_pol_eq(indices), indices[0], indices[1], indices[2], indices[3]);
+	cont=0;
+	while (cont<n){
+		raizes[cont]=raiz_da_equacao_pol(indices, 0);
+		//printf("%d %f %f %f %f\n", grau_pol_eq(indices), indices[0], indices[1], indices[2], indices[3]);
+		indices=fatoracao_por_monomio(indices, raizes[cont]);
+		cont++;
+	}
+	return raizes;
 }
 
 //matrizes
