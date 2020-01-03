@@ -5,12 +5,15 @@
 
 //funções
 double modulo(double num);
+double maximo(double nums[NMAX], int n);
 
 double potencia_expoente_inteiro(double base, int expoente);
 double potencia(double base, double expoente);
 double raiz_enesima(double base, int n);
 
 int grau_pol_eq(double indices[NMAX]);
+double* soma_pol_eq(double indicesp1[NMAX], double indicesp2[NMAX]);
+double* multiplica_pol_eq_por_escalar(double indices[NMAX], double escalar);
 double* derivate_pol_eq(double indices[NMAX]);
 double valor_pol_eq_no_pt(double indices[NMAX], double valor);
 double raiz_da_equacao_pol(double indices[NMAX], double x0);
@@ -25,6 +28,17 @@ void quick_sort(double vet[NMAX], int esq, int dir);
 double modulo(double num){
 	if(num<0) return (-1)*num;
 	return num;
+}
+double maximo(double nums[NMAX], int n){
+	int cont;
+	double max;
+	max=nums[0];
+	cont=0;
+	while(cont<n){
+		if(max<nums[cont]) max=nums[cont];
+		cont++;
+	}
+	return max;
 }
 
 //potencias
@@ -84,6 +98,31 @@ int grau_pol_eq(double indices[NMAX]){
 		cont--;
 	}
 	return 0;
+}
+double* soma_pol_eq(double indicesp1[NMAX], double indicesp2[NMAX]){
+	static double res[NMAX], graus[NMAX];
+	int cont,n;
+	graus[0]=grau_pol_eq(indicesp1);
+	graus[1]=grau_pol_eq(indicesp2);
+	n=maximo(graus, 2);
+	cont=0;
+	while(cont<NMAX){
+		res[cont]=indicesp1[cont]+indicesp2[cont];
+		cont++;
+	}
+	return res;
+}
+double* multiplica_pol_eq_por_escalar(double indices[NMAX], double escalar){
+	static double res[NMAX];
+	int cont, n;
+	n=grau_pol_eq(indices);
+	cont=0;
+	while(cont<NMAX){
+		if(cont<=n) res[cont]=escalar*indices[cont];
+		else res[cont]=0;
+		cont++;
+	}
+	return res;
 }
 double* derivate_pol_eq(double indices[NMAX]){
 	static double deriv[NMAX];
