@@ -11,14 +11,14 @@ double potencia_expoente_inteiro(double base, int expoente);
 double potencia(double base, double expoente);
 double raiz_enesima(double base, int n);
 
-int grau_pol_eq(double indices[NMAX]);
-double* soma_pol_eq(double indicesp1[NMAX], double indicesp2[NMAX]);
-double* multiplica_pol_eq_por_escalar(double indices[NMAX], double escalar);
-double* derivate_pol_eq(double indices[NMAX]);
-double valor_pol_eq_no_pt(double indices[NMAX], double valor);
-double raiz_da_equacao_pol(double indices[NMAX], double x0);
+int grau_eq_pol(double indices[NMAX]);
+double* soma_eq_pol(double indicesp1[NMAX], double indicesp2[NMAX]);
+double* multiplica_eq_pol_por_escalar(double indices[NMAX], double escalar);
+double* derivada_eq_pol(double indices[NMAX]);
+double valor_eq_pol_no_pt(double indices[NMAX], double valor);
+double raiz_da_eq_pol(double indices[NMAX], double x0);
 double* fatoracao_por_monomio(double indices[NMAX], double raiz);
-double* raizes_da_equacao_pol(double indices[NMAX]);
+double* raizes_da_eq_pol(double indices[NMAX]);
 
 double determinante(double matriz[NMAX][NMAX], int n);
 
@@ -64,7 +64,7 @@ double raiz_enesima(double base, int n){
 	}
 	ind[n]=1;
 	//a raiz do polinômio representado pelo vetor equivale a raiz n-sima de base
-	return raiz_da_equacao_pol(ind, 0);
+	return raiz_da_eq_pol(ind, 0);
 }
 double potencia(double base, double expoente){
 	//se o expoente for inteiro reduz-se o problema à função potencia_expoente_inteiro()
@@ -89,21 +89,22 @@ double potencia(double base, double expoente){
 	return res;
 }
 
-//equacoes
-int grau_pol_eq(double indices[NMAX]){
+//equacoes polinomiais
+int grau_eq_pol(double indices[NMAX]){
 	int cont;
 	cont=NMAX-1;
-	while(cont>1){
+	while(cont>0){
 		if(indices[cont]!=0.0) return cont;
 		cont--;
 	}
 	return 0;
 }
-double* soma_pol_eq(double indicesp1[NMAX], double indicesp2[NMAX]){
-	static double res[NMAX], graus[NMAX];
+double* soma_eq_pol(double indicesp1[NMAX], double indicesp2[NMAX]){
+	static double res[NMAX];
+	double graus[NMAX];
 	int cont,n;
-	graus[0]=grau_pol_eq(indicesp1);
-	graus[1]=grau_pol_eq(indicesp2);
+	graus[0]=grau_eq_pol(indicesp1);
+	graus[1]=grau_eq_pol(indicesp2);
 	n=maximo(graus, 2);
 	cont=0;
 	while(cont<NMAX){
@@ -112,10 +113,10 @@ double* soma_pol_eq(double indicesp1[NMAX], double indicesp2[NMAX]){
 	}
 	return res;
 }
-double* multiplica_pol_eq_por_escalar(double indices[NMAX], double escalar){
+double* multiplica_eq_pol_por_escalar(double indices[NMAX], double escalar){
 	static double res[NMAX];
 	int cont, n;
-	n=grau_pol_eq(indices);
+	n=grau_eq_pol(indices);
 	cont=0;
 	while(cont<NMAX){
 		if(cont<=n) res[cont]=escalar*indices[cont];
@@ -124,7 +125,29 @@ double* multiplica_pol_eq_por_escalar(double indices[NMAX], double escalar){
 	}
 	return res;
 }
-double* derivate_pol_eq(double indices[NMAX]){
+double* multiplica_eq_pol(double indicesp1[NMAX], double indicesp2[NMAX]){
+	static double res[2*NMAX-1];
+	int cont, contt, n1, n2;
+	n1=grau_eq_pol(indicesp1);
+	n2=grau_eq_pol(indicesp2);
+	cont=0;
+	while(cont<2*NMAX-1){
+		res[cont]=0;
+		cont++;
+	}
+	cont=0;
+	while(cont<=n1){
+		contt=0;
+		while(contt<=n2){
+			res[cont+contt]+=indicesp1[cont]*indicesp2[contt];
+			contt++;
+		}
+		cont++;
+	}
+
+	return res;
+}
+double* derivada_eq_pol(double indices[NMAX]){
 	static double deriv[NMAX];
 	int cont;
 	cont=0;
@@ -136,7 +159,7 @@ double* derivate_pol_eq(double indices[NMAX]){
 	deriv[NMAX]=0;
 	return deriv;
 }
-double valor_pol_eq_no_pt(double indices[NMAX], double valor){
+double valor_eq_pol_no_pt(double indices[NMAX], double valor){
 	int cont;
 	static double res;
 	cont=0;
@@ -148,18 +171,18 @@ double valor_pol_eq_no_pt(double indices[NMAX], double valor){
 	}
 	return res;
 }
-double raiz_da_equacao_pol(double indices[NMAX], double x0){
+double raiz_da_eq_pol(double indices[NMAX], double x0){
 	//método de Newton
-	double *deriv=derivate_pol_eq(indices);
-	while(valor_pol_eq_no_pt(deriv, x0)==0){
+	double *deriv=derivada_eq_pol(indices);
+	while(valor_eq_pol_no_pt(deriv, x0)==0){
 		x0++;
 	}
 	double x0ant=x0+1, funcval, tang;
 	//determina o novo valor de x0 baseado no valor da função e da derivada em x0 enquanto x0 e x0ant forem demasiado distantes
 	while(modulo(x0-x0ant)>ERRO){
 		x0ant=x0;
-		funcval=valor_pol_eq_no_pt(indices, x0);
-		tang=valor_pol_eq_no_pt(deriv, x0);
+		funcval=valor_eq_pol_no_pt(indices, x0);
+		tang=valor_eq_pol_no_pt(deriv, x0);
 		x0=x0-funcval/tang;	
 		//printf("%f %f %f %f\n", x0ant, x0, funcval, tang);
 	}
@@ -177,7 +200,7 @@ double* fatoracao_por_monomio(double indices[NMAX], double raiz){
 	}
 	cont=0;
 	while(cont<NMAX){
-		n=grau_pol_eq(copia_indices);
+		n=grau_eq_pol(copia_indices);
 		//printf("o grau que chegou é %d\n", n);
 		//printf("indices q chegou: %f %f %f %f\n", copia_indices[0], copia_indices[1], copia_indices[2], copia_indices[3]);
 		divisao[cont]=0;
@@ -194,14 +217,14 @@ double* fatoracao_por_monomio(double indices[NMAX], double raiz){
 	}
 	return divisao;
 }
-double* raizes_da_equacao_pol(double indices[NMAX]){
+double* raizes_da_eq_pol(double indices[NMAX]){
 	static double raizes[NMAX];
 	int cont, n;
-	n=grau_pol_eq(indices);
+	n=grau_eq_pol(indices);
 	//printf("%d %f %f %f %f\n", grau_pol_eq(indices), indices[0], indices[1], indices[2], indices[3]);
 	cont=0;
 	while (cont<n){
-		raizes[cont]=raiz_da_equacao_pol(indices, 0);
+		raizes[cont]=raiz_da_eq_pol(indices, 0);
 		//printf("%d %f %f %f %f\n", grau_pol_eq(indices), indices[0], indices[1], indices[2], indices[3]);
 		indices=fatoracao_por_monomio(indices, raizes[cont]);
 		cont++;
