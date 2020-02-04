@@ -7,22 +7,15 @@
 double modulo(double num);
 double maximo(double nums[NMAX], int n);
 
-double potencia_expoente_inteiro(double base, int expoente);
-double potencia(double base, double expoente);
-double raiz_enesima(double base, int n);
-
 int grau_eq_pol(double indices[NMAX]);
 double* soma_eq_pol(double indicesp1[NMAX], double indicesp2[NMAX]);
 double* multiplica_eq_pol_por_escalar(double indices[NMAX], double escalar);
+double* multiplica_eq_pol(double indicesp1[NMAX], double indicesp2[NMAX]);
 double* derivada_eq_pol(double indices[NMAX]);
 double valor_eq_pol_no_pt(double indices[NMAX], double valor);
 double raiz_da_eq_pol(double indices[NMAX], double x0);
 double* fatoracao_por_monomio(double indices[NMAX], double raiz);
 double* raizes_da_eq_pol(double indices[NMAX]);
-
-double determinante(double matriz[NMAX][NMAX], int n);
-
-void quick_sort(double vet[NMAX], int esq, int dir);
 
 //numeros
 double modulo(double num){
@@ -39,54 +32,6 @@ double maximo(double nums[NMAX], int n){
 		cont++;
 	}
 	return max;
-}
-
-//potencias
-double potencia_expoente_inteiro(double base, int expoente){
-	double res;
-	res=1;
-	//multiplica a base por si mesma expoente vezes (necessariamente um inteiro)
-	while(expoente>0){
-		res=res*base;
-		expoente--;
-	}
-	return res;
-}
-double raiz_enesima(double base, int n){
-	int cont;
-	double ind[NMAX];
-	//cria vetor com -base na posicao inicial e 1 na posição n
-	ind[0]=(-1)*base;
-	cont=1;
-	while(cont<NMAX){
-		ind[cont]=0;
-		cont++;
-	}
-	ind[n]=1;
-	//a raiz do polinômio representado pelo vetor equivale a raiz n-sima de base
-	return raiz_da_eq_pol(ind, 0);
-}
-double potencia(double base, double expoente){
-	//se o expoente for inteiro reduz-se o problema à função potencia_expoente_inteiro()
-	if((int)expoente==expoente){
-		return potencia_expoente_inteiro(base, (int)expoente);
-	}
-	int part_int, nominador, denominador;
-	double part_frac, res;
-	//separa o expoente na prte inteira e fracionária
-	part_int=(int)expoente;
-	part_frac=expoente-(double)part_int;
-	//transforma a parte fracionária em denominador=NMAX-1 e nominador equivalente
-	denominador=NMAX-1;
-	nominador=(int)(part_frac*(double)denominador);
-	//printf("%d %d %d\n", part_int, nominador, denominador);
-	//calcula cada uma das partes e multiplica
-	res=1;
-	res*=potencia_expoente_inteiro(raiz_enesima(base, denominador), nominador);
-	//printf("%f %f\n", raiz_enesima(base, denominador), res);
-	res*=potencia_expoente_inteiro(base, part_int);
-	//printf("%f\n", res);
-	return res;
 }
 
 //equacoes polinomiais
@@ -230,89 +175,4 @@ double* raizes_da_eq_pol(double indices[NMAX]){
 		cont++;
 	}
 	return raizes;
-}
-
-//matrizes
-double determinante(double matriz[NMAX][NMAX], int n){
-	double matrizaux[10][10], res;
-	int cont, contt, conttt;
-	res=0;
-	if(n==1){
-		return matriz[0][0];
-	}else if(n==2){
-		return (matriz[0][0]*matriz[1][1]-matriz[0][1]*matriz[1][0]);
-	}else{
-		cont=0;
-		while(cont<n){
-			contt=1;
-			while(contt<n){
-				conttt=0;
-				while(conttt<n){
-					if(conttt==cont){
-						conttt++;
-					}
-					if(conttt>cont){
-						matrizaux[contt-1][conttt-1]=matriz[contt][conttt];
-					}else{
-						matrizaux[contt-1][conttt]=matriz[contt][conttt];
-					}
-					conttt++;
-				}
-				contt++;
-			}
-			//res=res+potencia(-1,cont)*matriz[0][cont]*determinante(matrizaux, n-1);
-			cont++;
-		}
-		return res;
-	}
-}
-
-//sort
-void quick_sort(double vet[], int esq, int dir){
-	if(dir>esq){
-		int param, cont, aux;
-		param=esq;
-		cont=esq;
-		while(cont<dir){
-			if(cont==param){
-				cont++;
-			}
-			if(vet[cont]<vet[param]&&cont>param){
-				if(cont==param+1){
-					aux=vet[cont];
-					vet[cont]=vet[param];
-					vet[param]=aux;
-				}else{
-					aux=vet[param+1];
-					vet[param+1]=vet[param];
-					vet[param]=aux;
-					aux=vet[cont];
-					vet[cont]=vet[param];
-					vet[param]=aux;
-				}
-				param++;
-			}else if(vet[cont]>vet[param]&&cont<param){
-				if(cont==param-1){
-					aux=vet[cont];
-					vet[cont]=vet[param];
-					vet[param]=aux;
-				}else{
-					aux=vet[param-1];
-					vet[param-1]=vet[param];
-					vet[param]=aux;
-					aux=vet[cont];
-					vet[cont]=vet[param];
-					vet[param]=aux;
-				}
-				param--;
-			}
-			cont++;
-		}
-		cont=0;
-		quick_sort(vet, esq, param);
-		quick_sort(vet, param+1, dir);
-		return;
-	}else{
-		return;
-	}
 }
