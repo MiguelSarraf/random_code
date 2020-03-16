@@ -1,5 +1,8 @@
 #include<iostream>
 #include<string>
+#include<limits>
+#define alphabet "abcdefghijklmnopqrstuvwxyz"
+
 int indexof(char letter, std::string pal){
 	//retorna oo índice de letter em pal
 	int cont, size, res;
@@ -15,7 +18,6 @@ int indexof(char letter, std::string pal){
 	}
 	return res;
 }
-#define alphabet "abcdefghijklmnopqrstuvwxyz"
 std::string enciphervig(std::string in, std::string key){
 	//encripta por VIGINERE e retorna a string encriptada
 	int cont, npal, nkey;
@@ -68,21 +70,39 @@ void opcoes_de_cifra(){
 }
 int main(){
 	std::string key, in, out, escolha;
-	std::cout<<"Bem-vindo ao programa de cifras do Tio Miguel"<<std::endl;
+	std::cout<<"Welcome to Polvilho's cipher program.\n";
 	while(true){
-		std::cout<<"Cifra:";
+		std::cout<<"Cipher: ";
 		std::getline(std::cin, escolha);
 		if(escolha=="h"||escolha=="help"){
 			opcoes_de_cifra();
-		}else if(escolha=="cesar"||escolha=="Cesar"||escolha=="c"){
-			std::cout<<"Chave: ";
+		}else if(escolha=="caesar"||escolha=="Caesar"||escolha=="c"){
+			std::cout<<"Key: ";
 			std::cin>>key;
+			std::cout<<"Input: ";
+			std::cin>>in;
 			if(key.size()!=1){
-				std::cout<<"Chave inapropriada."<<std::endl;
+				std::cout<<"Inappropriate key.\n";
 			}else{
-				
+				out=enciphervig(in, key);
+				std::cout<<"Output: "<<out<<std::endl;
 			}
+		}else if(escolha=="viginere"||escolha=="Viginere"||escolha=="v"){
+			std::cout<<"Key:";
+			std::cin>>key;
+			std::cout<<"Input: ";
+			std::cin>>in;
+			if(key.size()==0){
+				std::cout<<"Inappropriate key.\n";
+			}else{
+				out=enciphervig(in, key);
+				std::cout<<"Output: "<<out<<std::endl;
+			}
+		}else{
+			std::cout<<"Cipher not recognized.\n";
 		}
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	}
 	return 0;
 }
