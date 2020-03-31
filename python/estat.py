@@ -140,7 +140,7 @@ def parameters(values):
 	kurtosis=m4/(m2**2)
 	return [mean, mode, median, variance, stddev, p_assymmetry, assymemtry, kurtosis]
 
-def confidence_interval(parameter, n, confidence, mean=None, proportion=None, stddev=None, variance=None):
+def confidence_interval(parameter, n, confidence, mean=None, proportion=None, variance=None, stddev=None):
 	'''
 	Inputs:
 	parameter: string representing which kind of confidence
@@ -179,6 +179,114 @@ def confidence_interval(parameter, n, confidence, mean=None, proportion=None, st
 		return (stddev**2)*(n-1)/chi_square.get_values((1-confidence)/2, n-1), (stddev**2)*(n-1)/chi_square.get_values(.5+confidence/2, n-1)
 	else:
 		print("Unidentified parameter")
+		exit()
+
+def hypotesis_test(kind, parameter, param_0, alternate_h, n, confidence, mean=None, proportion=None, variance=None, stddev=None):
+	if kind=="single":
+		if parameter=="mean_known_var":
+			z_calc=(mean-param_0)/((variance/n)**.5)
+			if alternate_h=="=/=":
+				z_tab_sup=normal.get_values(confidence/2)
+				z_tab_inf=(-1)*z_tab_sup
+				print("z_tab=["+str(z_tab_inf)+","+str(z_tab_sup)+"]")
+				print("z_calc="+str(z_calc))
+				return (z_calc>z_tab_inf and z_calc<z_tab_sup)
+			elif alternate_h=="<":
+				z_tab=normal.get_values(confidence-.5)
+				print("z_tab="+str(z_tab))
+				print("z_calc="+str(z_calc))
+				return z_calc<z_tab
+			elif alternate_h==">":
+				z_tab=normal.get_values(1-confidence)
+				print("z_tab="+str(z_tab))
+				print("z_calc="+str(z_calc))
+				return z_calc>z_tab	
+			else:
+				print("Unknown alternate hypotesis")
+				exit()
+		elif parameter=="mean_unknown_var":
+			t_calc=(mean-param_0)/(stddev/(n**.5))
+			if alternate_h=="=/=":
+				t_tab_sup=student.get_values(confidence/2, n-1)
+				t_tab_inf=(-1)*t_tab_sup
+				print("t_tab=["+str(t_tab_inf)+","+str(t_tab_sup)+"]")
+				print("t_calc="+str(t_calc))
+				return (z_calc>t_tab_inf and z_calc<t_tab_sup)
+			elif alternate_h=="<":
+				t_tab=Student.get_values(confidence-.5, n-1)
+				print("t_tab="+str(t_tab))
+				print("t_calc="+str(t_calc))
+				return t_calc<t_tab
+			elif alternate_h==">":
+				t_tab=Student.get_values(1-confidence, n-1)
+				print("t_tab="+str(t_tab))
+				print("t_calc="+str(t_calc))
+				return t_calc>t_tab	
+			else:
+				print("Unknown alternate hypotesis")
+				exit()
+		elif parameter=="proportion":
+			z_calc=(proportion-param_0)/(((param_0*(1-param_0))/n)**.5)
+			if alternate_h=="=/=":
+				z_tab_sup=normal.get_values(confidence/2)
+				z_tab_inf=(-1)*z_tab_sup
+				print("z_tab=["+str(z_tab_inf)+","+str(z_tab_sup)+"]")
+				print("z_calc="+str(z_calc))
+				return (z_calc>z_tab_inf and z_calc<z_tab_sup)
+			elif alternate_h=="<":
+				z_tab=normal.get_values(confidence-.5)
+				print("z_tab="+str(z_tab))
+				print("z_calc="+str(z_calc))
+				return z_calc<z_tab
+			elif alternate_h==">":
+				z_tab=normal.get_values(1-confidence)
+				print("z_tab="+str(z_tab))
+				print("z_calc="+str(z_calc))
+				return z_calc>z_tab	
+			else:
+				print("Unknown alternate hypotesis")
+				exit()
+		elif parameter=="variance":
+			chis_calc=((n-1)*stddev**2)/param_0
+			if alternate_h=="=/=":
+				chis_tab_sup=chi_square.get_values(confidence/2, n-1)
+				chis_tab_inf=chi_square.get_values(.5-confidence/2, n-1)
+				print("chis_tab=["+str(chis_tab_inf)+","+str(chis_tab_sup)+"]")
+				print("chis_calc="+str(chis_calc))
+				return (chis_calc>chis_tab_inf and chis_calc<chis_tab_sup)
+			elif alternate_h=="<":
+				chis_tab=chi_square.get_values(confidence, n-1)
+				print("chis_tab="+str(chis_tab))
+				print("chis_calc="+str(chis_calc))
+				return chis_calc>chis_tab
+			elif alternate_h==">":
+				chis_tab=chi_square.get_values(1-confidence, n-1)
+				print("chis_tab="+str(chis_tab))
+				print("chis_calc="+str(chis_calc))
+				return chis_calc<chis_tab	
+			else:
+				print("Unknown alternate hypotesis")
+				exit()
+		else:
+			print("Unidentified parameter")
+	elif kind=="dual":
+		if parameter=="paired_mean":
+			pass
+		elif parameter=="independent_mean_known_stddev":
+			pass
+		elif parameter=="independent_mean_unknown_equal_stddev":
+			pass
+		elif parameter=="independent_mean_unknown_diff_stddev":
+			pass
+		elif parameter=="proportion":
+			pass
+		elif parameter=="variance":
+			pass
+		else:
+			print("Unidentified parameter")
+	else:
+		print("Unknown kind")
+		exit()
 
 normal=tables.Normal()
 student=tables.Student()

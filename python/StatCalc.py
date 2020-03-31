@@ -147,7 +147,7 @@ def do_parameters(data):
 def do_mean_confidence_interval(n, confidence, mean, varstddev, kind):
 	if kind=="known":
 		interval=estat.confidence_interval("mean_known_var", n, confidence, variance=varstddev, mean=mean)
-	elif kind=="unkown":
+	elif kind=="unknown":
 		interval=estat.confidence_interval("mean_unknown_var", n, confidence, stddev=varstddev, mean=mean)
 	else:
 		print("Unknow type")
@@ -165,6 +165,30 @@ def do_prop_confidence_interval(n, confidence, proportion):
 def do_var_confidence_interval(n, confidence, stddev):
 	interval=estat.confidence_interval("variance", n, confidence, stddev=stddev)
 	text="Confidence interval is:\n["+str(int(10000*interval[0])/10000)+", "+str(int(10000*interval[1])/10000)+ "]"
+	messagebox.showinfo("RESULTS", text)
+
+'''Single Mean Hypotesis Test and show'''
+def do_single_mean_hypotesis_test(n, confidence, mean, varstddev, param0, alternate_hyp, kind):
+	if kind=="known":
+		result=estat.hypotesis_test("single", "mean_known_var", param0, alternate_hyp, n, confidence, mean=mean, variance=varstddev)
+	elif kind=="unknown":
+		result=estat.hypotesis_test("single", "mean_unknown_var", param0, alternate_hyp, n, confidence, mean=mean, stddev=varstddev)
+	else:
+		print("Unknow type")
+		exit()
+	text="Your hypotesis is "+str(result)
+	messagebox.showinfo("RESULTS", text)
+
+'''Single Proportion Hypotesis Test and show'''
+def do_single_proportion_hypotesis_test(n, confidence, proportion, param0, alternate_hyp):
+	result=estat.hypotesis_test("single", "proportion", param0, alternate_hyp, n, confidence, proportion=proportion)
+	text="Your hypotesis is "+str(result)
+	messagebox.showinfo("RESULTS", text)
+
+'''Single Variance Hypotesis Test and show'''
+def do_single_variance_hypotesis_test(n, confidence, varstddev, param0, alternate_hyp):
+	result=estat.hypotesis_test("single", "variance", param0, alternate_hyp, n, confidence, stddev=varstddev)
+	text="Your hypotesis is "+str(result)
 	messagebox.showinfo("RESULTS", text)
 
 '''Box Plot Screen'''
@@ -244,7 +268,7 @@ def cis():
 	ci_screen=tk.Toplevel(choose_screen)
 	ci_screen.title("StatCalc-Confidence Interval")
 	ci_screen.geometry("500x100")
-	label_type=tk.Label(ci_screen, text="Choose which parameter you want", font=("Times", 15), height=2)
+	label_type=tk.Label(ci_screen, text="Choose which parameter you want:", font=("Times", 15), height=2)
 	button_me=tk.Button(ci_screen, text="Mean", width=15, command=lambda:mcis())
 	button_pr=tk.Button(ci_screen, text="Proportion", width=15, command=lambda:pcis())
 	button_vr=tk.Button(ci_screen, text="Variance", width=15, command=lambda:vcis())
@@ -271,7 +295,7 @@ def mcis():
 	mci_screen.geometry("500x300")
 	known=StringVar(mci_screen)
 	rb_known=tk.Radiobutton(mci_screen, text="Known variance", value="known", variable=known, font=("Times", 15), command=lambda:go_var(label_var))
-	rb_unkonw=tk.Radiobutton(mci_screen, text="Unknow variance", value="unkown", variable=known, font=("Times", 15), command=lambda:go_std(label_var))
+	rb_unkonw=tk.Radiobutton(mci_screen, text="Unknow variance", value="unknown", variable=known, font=("Times", 15), command=lambda:go_std(label_var))
 	label_n=tk.Label(mci_screen, text="n: ", font=("Times", 15))
 	entry_n=tk.Entry(mci_screen, width=15)
 	label_conf=tk.Label(mci_screen, text="Confidence: 		       %", font=("Times", 15))
@@ -305,7 +329,7 @@ def mcis():
 	button_actbp.pack()
 	button_actbp.place(anchor="se", relx=.95, rely=.95)
 
-'''Proportion Confidence Interval'''
+'''Proportion Confidence Interval Screen'''
 def pcis():
 	pci_screen=tk.Toplevel(choose_screen)
 	pci_screen.title("StatCalc-Probability Confidence Interval")
@@ -333,7 +357,7 @@ def pcis():
 	button_actbp.pack()
 	button_actbp.place(anchor="se", relx=.95, rely=.95)
 
-'''Variance Confidence Interval'''
+'''Variance Confidence Interval Screen'''
 def vcis():
 	vci_screen=tk.Toplevel(choose_screen)
 	vci_screen.title("StatCalc-Variance Confidence Interval")
@@ -361,6 +385,167 @@ def vcis():
 	button_actbp.pack()
 	button_actbp.place(anchor="se", relx=.95, rely=.95)
 
+'''Hypotesis Test Screen'''
+def hts():
+	ht_screen=tk.Toplevel(choose_screen)
+	ht_screen.title("StatCalc-Hypotesis Test")
+	ht_screen.geometry("500x200")
+	label_single=tk.Label(ht_screen, text="Single variable:", font=("Times", 15), height=2)
+	button_sme=tk.Button(ht_screen, text="Mean", width=15, command=lambda:smhts())
+	button_spr=tk.Button(ht_screen, text="Proportion", width=15, command=lambda:sphts())
+	button_svr=tk.Button(ht_screen, text="Variance", width=15, command=lambda:svhts())
+	label_double=tk.Label(ht_screen, text="Double variable:", font=("Times", 15), height=2)
+	button_dme=tk.Button(ht_screen, text="Mean", width=15, command=lambda:notimplemented())
+	button_dpr=tk.Button(ht_screen, text="Proportion", width=15, command=lambda:notimplemented())
+	button_dvr=tk.Button(ht_screen, text="Variance", width=15, command=lambda:notimplemented())
+
+	label_single.pack()
+	label_single.place(anchor="nw", relx=.1)
+	button_sme.pack()
+	button_sme.place(anchor="nw",relx=.03, rely=.25)
+	button_spr.pack()
+	button_spr.place(anchor="nw",relx=.35, rely=.25)
+	button_svr.pack()
+	button_svr.place(anchor="nw",relx=.67, rely=.25)
+	label_double.pack()
+	label_double.place(anchor="nw", relx=.1, rely=.5)
+	button_dme.pack()
+	button_dme.place(anchor="nw",relx=.03, rely=.75)
+	button_dpr.pack()
+	button_dpr.place(anchor="nw",relx=.35, rely=.75)
+	button_dvr.pack()
+	button_dvr.place(anchor="nw",relx=.67, rely=.75)
+
+'''Single Mean Hypotesis Test Screen'''
+def smhts():
+	smht_screen=tk.Toplevel(choose_screen)
+	smht_screen.title("StatCalc-Single Mean Hypotesis Test")
+	smht_screen.geometry("500x400")
+	known=StringVar(smht_screen)
+	rb_known=tk.Radiobutton(smht_screen, text="Known variance", value="known", variable=known, font=("Times", 15), command=lambda:go_var(label_var))
+	rb_unkonw=tk.Radiobutton(smht_screen, text="Unknow variance", value="unknown", variable=known, font=("Times", 15), command=lambda:go_std(label_var))
+	label_h=tk.Label(smht_screen, text="Alternate hyp.: μ		μ0 =", font=("Times", 15))
+	rel=StringVar(smht_screen)
+	rel.set("=/=")
+	option_rel=tk.OptionMenu(smht_screen, rel, "=/=", "<", ">")
+	entry_param0=tk.Entry(smht_screen, width=15)
+	label_n=tk.Label(smht_screen, text="n: ", font=("Times", 15))
+	entry_n=tk.Entry(smht_screen, width=15)
+	label_conf=tk.Label(smht_screen, text="Confidence: 		       %", font=("Times", 15))
+	entry_conf=tk.Entry(smht_screen, width=15)
+	label_mean=tk.Label(smht_screen, text="Mean: ", font=("Times", 15))
+	entry_mean=tk.Entry(smht_screen, width=15)
+	label_var=tk.Label(smht_screen, text="Variance: ", font=("Times", 15))
+	entry_var=tk.Entry(smht_screen, width=15)
+	button_actbp=tk.Button(smht_screen, text="Calculate", width=20, command=lambda:do_single_mean_hypotesis_test(int(entry_n.get()), float(entry_conf.get())/100, float(entry_mean.get()), float(entry_var.get()),float(entry_param0.get()), rel.get(), known.get()))
+
+	rb_known.pack()
+	rb_known.place(anchor="nw", relx=.1)
+	rb_unkonw.pack()
+	rb_unkonw.place(anchor="nw", relx=.5)
+	label_h.pack()
+	label_h.place(anchor="nw", relx=.1, rely=.15)
+	option_rel.pack()
+	option_rel.place(anchor="nw", relx=.41, rely=.15)
+	entry_param0.pack()
+	entry_param0.place(anchor="nw", relx=.67, rely=.15)
+	label_n.pack()
+	label_n.place(anchor="nw", relx=.1, rely=.3)
+	entry_n.pack()
+	entry_n.place(anchor="nw", relx=.4, rely=.3)
+	label_conf.pack()
+	label_conf.place(anchor="nw", relx=.1, rely=.45)
+	entry_conf.pack()
+	entry_conf.place(anchor="nw", relx=.4, rely=.45)
+	label_mean.pack()
+	label_mean.place(anchor="nw", relx=.1, rely=.6)
+	entry_mean.pack()
+	entry_mean.place(anchor="nw", relx=.4, rely=.6)
+	label_var.pack()
+	label_var.place(anchor="nw", relx=.1, rely=.75)
+	entry_var.pack()
+	entry_var.place(anchor="nw", relx=.4, rely=.75)
+	button_actbp.pack()
+	button_actbp.place(anchor="se", relx=.95, rely=.95)
+
+'''Single Proportion Hypotesis Test Screen'''
+def sphts():
+	spht_screen=tk.Toplevel(choose_screen)
+	spht_screen.title("StatCalc-Single Proportion Hypotesis Test")
+	spht_screen.geometry("500x300")
+	label_h=tk.Label(spht_screen, text="Alternate hyp.: p		p0 =", font=("Times", 15))
+	rel=StringVar(spht_screen)
+	rel.set("=/=")
+	option_rel=tk.OptionMenu(spht_screen, rel, "=/=", "<", ">")
+	entry_param0=tk.Entry(spht_screen, width=15)
+	label_n=tk.Label(spht_screen, text="n: ", font=("Times", 15))
+	entry_n=tk.Entry(spht_screen, width=15)
+	label_conf=tk.Label(spht_screen, text="Confidence: 		       %", font=("Times", 15))
+	entry_conf=tk.Entry(spht_screen, width=15)
+	label_prop=tk.Label(spht_screen, text="Proportion: ", font=("Times", 15))
+	entry_prop=tk.Entry(spht_screen, width=15)
+	button_actbp=tk.Button(spht_screen, text="Calculate", width=20, command=lambda:do_single_proportion_hypotesis_test(int(entry_n.get()), float(entry_conf.get())/100, float(entry_prop.get()),float(entry_param0.get()), rel.get()))
+
+	label_h.pack()
+	label_h.place(anchor="nw", relx=.1, rely=.07)
+	option_rel.pack()
+	option_rel.place(anchor="nw", relx=.41, rely=.06)
+	entry_param0.pack()
+	entry_param0.place(anchor="nw", relx=.67, rely=.07)
+	label_n.pack()
+	label_n.place(anchor="nw", relx=.1, rely=.27)
+	entry_n.pack()
+	entry_n.place(anchor="nw", relx=.4, rely=.27)
+	label_conf.pack()
+	label_conf.place(anchor="nw", relx=.1, rely=.46)
+	entry_conf.pack()
+	entry_conf.place(anchor="nw", relx=.4, rely=.46)
+	label_prop.pack()
+	label_prop.place(anchor="nw", relx=.1, rely=.66)
+	entry_prop.pack()
+	entry_prop.place(anchor="nw", relx=.4, rely=.66)
+	button_actbp.pack()
+	button_actbp.place(anchor="se", relx=.95, rely=.93)
+
+'''Single Variance Hypotesis Test Screen'''
+def svhts():
+	svht_screen=tk.Toplevel(choose_screen)
+	svht_screen.title("StatCalc-Single Variance Hypotesis Test")
+	svht_screen.geometry("500x300")
+	label_h=tk.Label(svht_screen, text="Alternate hyp.: σ		σ0 =", font=("Times", 15))
+	rel=StringVar(svht_screen)
+	rel.set("=/=")
+	option_rel=tk.OptionMenu(svht_screen, rel, "=/=", "<", ">")
+	entry_param0=tk.Entry(svht_screen, width=15)
+	label_n=tk.Label(svht_screen, text="n: ", font=("Times", 15))
+	entry_n=tk.Entry(svht_screen, width=15)
+	label_conf=tk.Label(svht_screen, text="Confidence: 		       %", font=("Times", 15))
+	entry_conf=tk.Entry(svht_screen, width=15)
+	label_stddev=tk.Label(svht_screen, text="Std Deviation: ", font=("Times", 15))
+	entry_stddev=tk.Entry(svht_screen, width=15)
+	button_actbp=tk.Button(svht_screen, text="Calculate", width=20, command=lambda:do_single_variance_hypotesis_test(int(entry_n.get()), float(entry_conf.get())/100, float(entry_stddev.get()),float(entry_param0.get()), rel.get()))
+
+	label_h.pack()
+	label_h.place(anchor="nw", relx=.1, rely=.063)
+	option_rel.pack()
+	option_rel.place(anchor="nw", relx=.41, rely=.063)
+	entry_param0.pack()
+	entry_param0.place(anchor="nw", relx=.67, rely=.063)
+	label_n.pack()
+	label_n.place(anchor="nw", relx=.1, rely=.26)
+	entry_n.pack()
+	entry_n.place(anchor="nw", relx=.4, rely=.26)
+	label_conf.pack()
+	label_conf.place(anchor="nw", relx=.1, rely=.46)
+	entry_conf.pack()
+	entry_conf.place(anchor="nw", relx=.4, rely=.46)
+	label_stddev.pack()
+	label_stddev.place(anchor="nw", relx=.1, rely=.66)
+	entry_stddev.pack()
+	entry_stddev.place(anchor="nw", relx=.4, rely=.66)
+	button_actbp.pack()
+	button_actbp.place(anchor="se", relx=.95, rely=.93)
+
 '''Initial Screen'''
 choose_screen=tk.Tk()
 choose_screen.title("StatCalc")
@@ -370,7 +555,7 @@ button_bp=tk.Button(choose_screen, text="Box Plot", width=20, command=lambda:bps
 button_hg=tk.Button(choose_screen, text="Histogram", width=20,command=lambda:hgs())
 button_dp=tk.Button(choose_screen, text="Distribution Parameters", width=20, command=lambda:dps())
 button_ci=tk.Button(choose_screen, text="Confidence Interval", width=20, command=lambda:cis())
-button_ht=tk.Button(choose_screen, text="Hypotesis Test", width=20, command=lambda:notimplemented())
+button_ht=tk.Button(choose_screen, text="Hypotesis Test", width=20, command=lambda:hts())
 button_at=tk.Button(choose_screen, text="Adeherence Test", width=20, command=lambda:notimplemented())
 button_va=tk.Button(choose_screen, text="Varience Analysis", width=20, command=lambda:notimplemented())
 button_lr=tk.Button(choose_screen, text="Linear Regression", width=20, command=lambda:notimplemented())
