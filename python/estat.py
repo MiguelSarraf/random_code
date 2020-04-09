@@ -355,7 +355,26 @@ def hypotesis_test(kind, parameter, param_0, alternate_h, n, confidence, mean=No
 				print("Unknown alternate hypotesis")
 				exit()
 		elif parameter=="proportion":
-			pass
+			z_calc=(proportion[0]-proportion[1]-param_0)/(((proportion[0]*(1-proportion[0]))/n[0]+(proportion[1]*(1-proportion[1]))/n[1])**.5)
+			if alternate_h=="=/=":
+				z_tab_sup=normal.get_values(confidence/2)
+				z_tab_inf=(-1)*z_tab_sup
+				print("z_tab=["+str(z_tab_inf)+","+str(z_tab_sup)+"]")
+				print("z_calc="+str(z_calc))
+				return (z_calc>z_tab_inf and z_calc<z_tab_sup)
+			elif alternate_h=="<":
+				z_tab=normal.get_values(confidence-.5)
+				print("z_tab="+str(z_tab))
+				print("z_calc="+str(z_calc))
+				return z_calc<z_tab
+			elif alternate_h==">":
+				z_tab=normal.get_values(1-confidence)
+				print("z_tab="+str(z_tab))
+				print("z_calc="+str(z_calc))
+				return z_calc>z_tab	
+			else:
+				print("Unknown alternate hypotesis")
+				exit()
 		elif parameter=="variance":
 			pass
 		else:
