@@ -191,6 +191,22 @@ def do_single_variance_hypotesis_test(n, confidence, varstddev, param0, alternat
 	text="Your hypotesis is "+str(result)
 	messagebox.showinfo("RESULTS", text)
 
+'''Dual Mean Hypotesis Test and show'''
+def do_dual_mean_hypotesis_test(n1, confidence, mean1, varstddev1, param0, alternate_hyp, kind, n2=None, mean2=None, varstddev2=None):
+	if kind=="Paired data":
+		result=estat.hypotesis_test("dual", "paired_mean", param0, alternate_hyp, n1, confidence, mean=mean1, stddev=varstddev1)
+	elif kind=="Independent, known std deviation":
+		result=estat.hypotesis_test("dual", "independent_mean_known_stddev", param0, alternate_hyp, (n1, n2), confidence, mean=(mean1, mean2), stddev=(varstddev1, varstddev2))
+	elif kind=="Independent, unknown equal std deviation":
+		result=estat.hypotesis_test("dual", "independent_mean_unknown_equal_stddev", param0, alternate_hyp, (n1, n2), confidence, mean=(mean1, mean2), stddev=(varstddev1, varstddev2))
+	elif kind=="Independent, unknown different std deviation":
+		result=estat.hypotesis_test("dual", "independent_mean_unknown_diff_stddev", param0, alternate_hyp, (n1, n2), confidence, mean=(mean1, mean2), stddev=(varstddev1, varstddev2))
+	else:
+		print("Unknow type")
+		exit()
+	text="Your hypotesis is "+str(result)
+	messagebox.showinfo("RESULTS", text)
+
 '''Box Plot Screen'''
 def bps():
 	bp_screen=tk.Toplevel(choose_screen)
@@ -305,6 +321,7 @@ def mcis():
 	label_var=tk.Label(mci_screen, text="Variance: ", font=("Times", 15))
 	entry_var=tk.Entry(mci_screen, width=15)
 	button_actbp=tk.Button(mci_screen, text="Calculate", width=20, command=lambda:do_mean_confidence_interval(int(entry_n.get()), float(entry_conf.get())/100, float(entry_mean.get()), float(entry_var.get()), known.get()))
+	butc=tk.Button(mci_screen, text="Back", width=20, command=mci_screen.destroy)
 
 	rb_known.pack()
 	rb_known.place(anchor="nw", relx=.1)
@@ -328,6 +345,9 @@ def mcis():
 	entry_var.place(anchor="nw", relx=.4, rely=.6)
 	button_actbp.pack()
 	button_actbp.place(anchor="se", relx=.95, rely=.95)
+	butc.pack()
+	butc.place(anchor="sw",relx=.05, rely=.95)
+
 
 '''Proportion Confidence Interval Screen'''
 def pcis():
@@ -341,6 +361,7 @@ def pcis():
 	label_prop=tk.Label(pci_screen, text="Proportion: ", font=("Times", 15))
 	entry_prop=tk.Entry(pci_screen, width=15)
 	button_actbp=tk.Button(pci_screen, text="Calculate", width=20, command=lambda:do_prop_confidence_interval(int(entry_n.get()), float(entry_conf.get())/100, float(entry_prop.get())))
+	butc=tk.Button(pci_screen, text="Back", width=20, command=pci_screen.destroy)
 
 	label_n.pack()
 	label_n.place(anchor="nw", relx=.1, rely=.1)
@@ -356,6 +377,9 @@ def pcis():
 	entry_prop.place(anchor="nw", relx=.4, rely=.5)
 	button_actbp.pack()
 	button_actbp.place(anchor="se", relx=.95, rely=.95)
+	butc.pack()
+	butc.place(anchor="sw",relx=.05, rely=.95)
+
 
 '''Variance Confidence Interval Screen'''
 def vcis():
@@ -369,6 +393,7 @@ def vcis():
 	label_stddev=tk.Label(vci_screen, text="Std Deviation: ", font=("Times", 15))
 	entry_stddev=tk.Entry(vci_screen, width=15)
 	button_actbp=tk.Button(vci_screen, text="Calculate", width=20, command=lambda:do_var_confidence_interval(int(entry_n.get()), float(entry_conf.get())/100, float(entry_stddev.get())))
+	butc=tk.Button(vci_screen, text="Back", width=20, command=vci_screen.destroy)
 
 	label_n.pack()
 	label_n.place(anchor="nw", relx=.1, rely=.1)
@@ -384,6 +409,9 @@ def vcis():
 	entry_stddev.place(anchor="nw", relx=.4, rely=.5)
 	button_actbp.pack()
 	button_actbp.place(anchor="se", relx=.95, rely=.95)
+	butc.pack()
+	butc.place(anchor="sw",relx=.05, rely=.95)
+
 
 '''Hypotesis Test Screen'''
 def hts():
@@ -395,7 +423,7 @@ def hts():
 	button_spr=tk.Button(ht_screen, text="Proportion", width=15, command=lambda:sphts())
 	button_svr=tk.Button(ht_screen, text="Variance", width=15, command=lambda:svhts())
 	label_double=tk.Label(ht_screen, text="Double variable:", font=("Times", 15), height=2)
-	button_dme=tk.Button(ht_screen, text="Mean", width=15, command=lambda:notimplemented())
+	button_dme=tk.Button(ht_screen, text="Mean", width=15, command=lambda:dmhts())
 	button_dpr=tk.Button(ht_screen, text="Proportion", width=15, command=lambda:notimplemented())
 	button_dvr=tk.Button(ht_screen, text="Variance", width=15, command=lambda:notimplemented())
 
@@ -438,6 +466,7 @@ def smhts():
 	label_var=tk.Label(smht_screen, text="Variance: ", font=("Times", 15))
 	entry_var=tk.Entry(smht_screen, width=15)
 	button_actbp=tk.Button(smht_screen, text="Calculate", width=20, command=lambda:do_single_mean_hypotesis_test(int(entry_n.get()), float(entry_conf.get())/100, float(entry_mean.get()), float(entry_var.get()),float(entry_param0.get()), rel.get(), known.get()))
+	butc=tk.Button(smht_screen, text="Back", width=20, command=smht_screen.destroy)
 
 	rb_known.pack()
 	rb_known.place(anchor="nw", relx=.1)
@@ -467,6 +496,9 @@ def smhts():
 	entry_var.place(anchor="nw", relx=.4, rely=.75)
 	button_actbp.pack()
 	button_actbp.place(anchor="se", relx=.95, rely=.95)
+	butc.pack()
+	butc.place(anchor="sw",relx=.05, rely=.95)
+
 
 '''Single Proportion Hypotesis Test Screen'''
 def sphts():
@@ -485,6 +517,7 @@ def sphts():
 	label_prop=tk.Label(spht_screen, text="Proportion: ", font=("Times", 15))
 	entry_prop=tk.Entry(spht_screen, width=15)
 	button_actbp=tk.Button(spht_screen, text="Calculate", width=20, command=lambda:do_single_proportion_hypotesis_test(int(entry_n.get()), float(entry_conf.get())/100, float(entry_prop.get()),float(entry_param0.get()), rel.get()))
+	butc=tk.Button(spht_screen, text="Back", width=20, command=spht_screen.destroy)
 
 	label_h.pack()
 	label_h.place(anchor="nw", relx=.1, rely=.07)
@@ -506,6 +539,9 @@ def sphts():
 	entry_prop.place(anchor="nw", relx=.4, rely=.66)
 	button_actbp.pack()
 	button_actbp.place(anchor="se", relx=.95, rely=.93)
+	butc.pack()
+	butc.place(anchor="sw",relx=.05, rely=.95)
+
 
 '''Single Variance Hypotesis Test Screen'''
 def svhts():
@@ -524,6 +560,7 @@ def svhts():
 	label_stddev=tk.Label(svht_screen, text="Std Deviation: ", font=("Times", 15))
 	entry_stddev=tk.Entry(svht_screen, width=15)
 	button_actbp=tk.Button(svht_screen, text="Calculate", width=20, command=lambda:do_single_variance_hypotesis_test(int(entry_n.get()), float(entry_conf.get())/100, float(entry_stddev.get()),float(entry_param0.get()), rel.get()))
+	butc=tk.Button(svht_screen, text="Back", width=20, command=svht_screen.destroy)
 
 	label_h.pack()
 	label_h.place(anchor="nw", relx=.1, rely=.063)
@@ -545,6 +582,74 @@ def svhts():
 	entry_stddev.place(anchor="nw", relx=.4, rely=.66)
 	button_actbp.pack()
 	button_actbp.place(anchor="se", relx=.95, rely=.93)
+	butc.pack()
+	butc.place(anchor="sw",relx=.05, rely=.95)
+
+
+'''Dual Mean Hypotesis Test Screen'''
+def dmhts():
+	dmht_screen=tk.Toplevel(choose_screen)
+	dmht_screen.title("StatCalc-Dual Mean Hypotesis Test")
+	dmht_screen.geometry("500x400")
+	kind=StringVar(dmht_screen)
+	kind_rel=tk.OptionMenu(dmht_screen, kind, "Paired data", "Independent, known std deviation", "Independent, unknown equal std deviation", "Independent, unknown different std deviation")
+	label_h=tk.Label(dmht_screen, text="Alternate hyp.: μ1-μ2	   Δ =", font=("Times", 15))
+	rel=StringVar(dmht_screen)
+	rel.set("=/=")
+	option_rel=tk.OptionMenu(dmht_screen, rel, "=/=", "<", ">")
+	entry_param0=tk.Entry(dmht_screen, width=15)
+	label_n=tk.Label(dmht_screen, text="n's: ", font=("Times", 15))
+	entry_n1=tk.Entry(dmht_screen, width=15)
+	entry_n2=tk.Entry(dmht_screen, width=15)
+	entry_n2.insert(0, "0")
+	label_conf=tk.Label(dmht_screen, text="Confidence: 		       %", font=("Times", 15))
+	entry_conf=tk.Entry(dmht_screen, width=15)
+	label_mean=tk.Label(dmht_screen, text="Means: ", font=("Times", 15))
+	entry_mean1=tk.Entry(dmht_screen, width=15)
+	entry_mean2=tk.Entry(dmht_screen, width=15)
+	entry_mean2.insert(0, "0")
+	label_var=tk.Label(dmht_screen, text="Std Deviations: ", font=("Times", 15))
+	entry_var1=tk.Entry(dmht_screen, width=15)
+	entry_var2=tk.Entry(dmht_screen, width=15)
+	entry_var2.insert(0, "0")
+	button_actbp=tk.Button(dmht_screen, text="Calculate", width=20, command=lambda:do_dual_mean_hypotesis_test(int(entry_n1.get()), float(entry_conf.get())/100, float(entry_mean1.get()), float(entry_var1.get()),float(entry_param0.get()), rel.get(), kind.get(), float(entry_n2.get()), float(entry_mean2.get()), float(entry_var2.get())))
+	butc=tk.Button(dmht_screen, text="Back", width=20, command=dmht_screen.destroy)
+
+	kind_rel.pack()
+	kind_rel.place(anchor="nw", relx=.1, rely=.04)
+	label_h.pack()
+	label_h.place(anchor="nw", relx=.1, rely=.15)
+	option_rel.pack()
+	option_rel.place(anchor="nw", relx=.47, rely=.15)
+	entry_param0.pack()
+	entry_param0.place(anchor="nw", relx=.68, rely=.15)
+	label_n.pack()
+	label_n.place(anchor="nw", relx=.1, rely=.3)
+	entry_n1.pack()
+	entry_n1.place(anchor="nw", relx=.4, rely=.3)
+	entry_n2.pack()
+	entry_n2.place(anchor="nw", relx=.7, rely=.3)
+	label_conf.pack()
+	label_conf.place(anchor="nw", relx=.1, rely=.45)
+	entry_conf.pack()
+	entry_conf.place(anchor="nw", relx=.4, rely=.45)
+	label_mean.pack()
+	label_mean.place(anchor="nw", relx=.1, rely=.6)
+	entry_mean1.pack()
+	entry_mean1.place(anchor="nw", relx=.4, rely=.6)
+	entry_mean2.pack()
+	entry_mean2.place(anchor="nw", relx=.7, rely=.6)
+	label_var.pack()
+	label_var.place(anchor="nw", relx=.1, rely=.75)
+	entry_var1.pack()
+	entry_var1.place(anchor="nw", relx=.4, rely=.75)
+	entry_var2.pack()
+	entry_var2.place(anchor="nw", relx=.7, rely=.75)
+	button_actbp.pack()
+	button_actbp.place(anchor="se", relx=.95, rely=.95)
+	butc.pack()
+	butc.place(anchor="sw",relx=.05, rely=.95)
+
 
 '''Initial Screen'''
 choose_screen=tk.Tk()
