@@ -207,6 +207,12 @@ def do_dual_mean_hypotesis_test(n1, confidence, mean1, varstddev1, param0, alter
 	text="Your hypotesis is "+str(result)
 	messagebox.showinfo("RESULTS", text)
 
+'''Dual Proportion Hypotesis Test and show'''
+def do_dual_proportion_hypotesis_test(n1, n2, confidence, proportion1, proportion2, param0, alternate_hyp):
+	result=estat.hypotesis_test("dual", "proportion", param0, alternate_hyp, (n1, n2), confidence, proportion=(proportion1, proportion2))
+	text="Your hypotesis is "+str(result)
+	messagebox.showinfo("RESULTS", text)
+
 '''Box Plot Screen'''
 def bps():
 	bp_screen=tk.Toplevel(choose_screen)
@@ -669,7 +675,7 @@ def dphts():
 	label_prop=tk.Label(dpht_screen, text="Proportions: ", font=("Times", 15))
 	entry_prop1=tk.Entry(dpht_screen, width=15)
 	entry_prop2=tk.Entry(dpht_screen, width=15)
-	button_actbp=tk.Button(dpht_screen, text="Calculate", width=20, command=lambda:do_single_proportion_hypotesis_test(int(entry_n1.get()), float(entry_conf.get())/100, float(entry_prop1.get()),float(entry_param0.get()), rel.get()))
+	button_actbp=tk.Button(dpht_screen, text="Calculate", width=20, command=lambda:do_dual_proportion_hypotesis_test(int(entry_n1.get()), int(entry_n2.get()), float(entry_conf.get())/100, float(entry_prop1.get()), float(entry_prop2.get()),float(entry_param0.get()), rel.get()))
 	butc=tk.Button(dpht_screen, text="Back", width=20, command=dpht_screen.destroy)
 
 	label_h.pack()

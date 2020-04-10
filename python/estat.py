@@ -192,15 +192,15 @@ def hypotesis_test(kind, parameter, param_0, alternate_h, n, confidence, mean=No
 				print("z_calc="+str(z_calc))
 				return (z_calc>z_tab_inf and z_calc<z_tab_sup)
 			elif alternate_h=="<":
+				z_tab=(-1)*normal.get_values(confidence-.5)
+				print("z_tab="+str(z_tab))
+				print("z_calc="+str(z_calc))
+				return z_calc>z_tab
+			elif alternate_h==">":
 				z_tab=normal.get_values(confidence-.5)
 				print("z_tab="+str(z_tab))
 				print("z_calc="+str(z_calc))
-				return z_calc<z_tab
-			elif alternate_h==">":
-				z_tab=normal.get_values(1-confidence)
-				print("z_tab="+str(z_tab))
-				print("z_calc="+str(z_calc))
-				return z_calc>z_tab	
+				return z_calc<z_tab	
 			else:
 				print("Unknown alternate hypotesis")
 				exit()
@@ -211,17 +211,17 @@ def hypotesis_test(kind, parameter, param_0, alternate_h, n, confidence, mean=No
 				t_tab_inf=(-1)*t_tab_sup
 				print("t_tab=["+str(t_tab_inf)+","+str(t_tab_sup)+"]")
 				print("t_calc="+str(t_calc))
-				return (z_calc>t_tab_inf and z_calc<t_tab_sup)
+				return (t_calc>t_tab_inf and t_calc<t_tab_sup)
 			elif alternate_h=="<":
-				t_tab=Student.get_values(confidence-.5, n-1)
+				t_tab=(-1)*student.get_values(1-confidence, n-1)
 				print("t_tab="+str(t_tab))
 				print("t_calc="+str(t_calc))
-				return t_calc<t_tab
+				return t_calc>t_tab
 			elif alternate_h==">":
-				t_tab=Student.get_values(1-confidence, n-1)
+				t_tab=student.get_values(1-confidence, n-1)
 				print("t_tab="+str(t_tab))
 				print("t_calc="+str(t_calc))
-				return t_calc>t_tab	
+				return t_calc<t_tab	
 			else:
 				print("Unknown alternate hypotesis")
 				exit()
@@ -234,15 +234,15 @@ def hypotesis_test(kind, parameter, param_0, alternate_h, n, confidence, mean=No
 				print("z_calc="+str(z_calc))
 				return (z_calc>z_tab_inf and z_calc<z_tab_sup)
 			elif alternate_h=="<":
+				z_tab=(-1)*normal.get_values(confidence-.5)
+				print("z_tab="+str(z_tab))
+				print("z_calc="+str(z_calc))
+				return z_calc>z_tab
+			elif alternate_h==">":
 				z_tab=normal.get_values(confidence-.5)
 				print("z_tab="+str(z_tab))
 				print("z_calc="+str(z_calc))
-				return z_calc<z_tab
-			elif alternate_h==">":
-				z_tab=normal.get_values(1-confidence)
-				print("z_tab="+str(z_tab))
-				print("z_calc="+str(z_calc))
-				return z_calc>z_tab	
+				return z_calc<z_tab	
 			else:
 				print("Unknown alternate hypotesis")
 				exit()
@@ -273,21 +273,21 @@ def hypotesis_test(kind, parameter, param_0, alternate_h, n, confidence, mean=No
 		if parameter=="paired_mean":
 			t_calc=(mean-param_0)/(stddev/(n**.5))
 			if alternate_h=="=/=":
-				t_tab_sup=student.get_values(confidence/2, n-1)
+				t_tab_sup=student.get_values(.5-confidence/2, n-1)
 				t_tab_inf=(-1)*t_tab_sup
 				print("t_tab=["+str(t_tab_inf)+","+str(t_tab_sup)+"]")
 				print("t_calc="+str(t_calc))
-				return (z_calc>t_tab_inf and z_calc<t_tab_sup)
+				return (t_calc>t_tab_inf and t_calc<t_tab_sup)
 			elif alternate_h=="<":
-				t_tab=Student.get_values(confidence-.5, n-1)
+				t_tab=(-1)*Student.get_values(1-confidence, n-1)
 				print("t_tab="+str(t_tab))
 				print("t_calc="+str(t_calc))
-				return t_calc<t_tab
+				return t_calc>t_tab
 			elif alternate_h==">":
 				t_tab=Student.get_values(1-confidence, n-1)
 				print("t_tab="+str(t_tab))
 				print("t_calc="+str(t_calc))
-				return t_calc>t_tab	
+				return t_calc<t_tab	
 			else:
 				print("Unknown alternate hypotesis")
 				exit()
@@ -300,36 +300,36 @@ def hypotesis_test(kind, parameter, param_0, alternate_h, n, confidence, mean=No
 				print("z_calc="+str(z_calc))
 				return (z_calc>z_tab_inf and z_calc<z_tab_sup)
 			elif alternate_h=="<":
+				z_tab=(-1)*normal.get_values(confidence-.5)
+				print("z_tab="+str(z_tab))
+				print("z_calc="+str(z_calc))
+				return z_calc>z_tab
+			elif alternate_h==">":
 				z_tab=normal.get_values(confidence-.5)
 				print("z_tab="+str(z_tab))
 				print("z_calc="+str(z_calc))
-				return z_calc<z_tab
-			elif alternate_h==">":
-				z_tab=normal.get_values(1-confidence)
-				print("z_tab="+str(z_tab))
-				print("z_calc="+str(z_calc))
-				return z_calc>z_tab	
+				return z_calc<z_tab	
 			else:
 				print("Unknown alternate hypotesis")
 				exit()
 		elif parameter=="independent_mean_unknown_equal_stddev":
-			t_calc=(mean[0]-mean[1]-param_0)/(((((n[0]-1)*stddev[0]**2+(n[1]-1)*stddev[1]**2)/(n[0]+n[1]-2))**.5)*((1/n[0]+1/n[1])**.5))
+			t_calc=(mean[0]-mean[1]-param_0)/(((((n[0]-1)*(stddev[0]**2)+(n[1]-1)*(stddev[1]**2))/(n[0]+n[1]-2))**.5)*(((n[0]+n[1])/(n[0]*n[1]))**.5))
 			if alternate_h=="=/=":
-				t_tab_sup=student.get_values(confidence/2, n-1)
+				t_tab_sup=student.get_values(.5-confidence/2, n[0]+n[1]-2)
 				t_tab_inf=(-1)*t_tab_sup
 				print("t_tab=["+str(t_tab_inf)+","+str(t_tab_sup)+"]")
 				print("t_calc="+str(t_calc))
-				return (z_calc>t_tab_inf and z_calc<t_tab_sup)
+				return (t_calc>t_tab_inf and t_calc<t_tab_sup)
 			elif alternate_h=="<":
-				t_tab=Student.get_values(confidence-.5, n-1)
+				t_tab=(-1)*Student.get_values(1-confidence, int(n[0]*n[1]/(n[0]+n[1]))-1)
 				print("t_tab="+str(t_tab))
 				print("t_calc="+str(t_calc))
-				return t_calc<t_tab
+				return t_calc>t_tab
 			elif alternate_h==">":
-				t_tab=Student.get_values(1-confidence, n-1)
+				t_tab=Student.get_values(1-confidence, int(n[0]*n[1]/(n[0]+n[1]))-1)
 				print("t_tab="+str(t_tab))
 				print("t_calc="+str(t_calc))
-				return t_calc>t_tab	
+				return t_calc<t_tab	
 			else:
 				print("Unknown alternate hypotesis")
 				exit()
@@ -340,17 +340,17 @@ def hypotesis_test(kind, parameter, param_0, alternate_h, n, confidence, mean=No
 				t_tab_inf=(-1)*t_tab_sup
 				print("t_tab=["+str(t_tab_inf)+","+str(t_tab_sup)+"]")
 				print("t_calc="+str(t_calc))
-				return (z_calc>t_tab_inf and z_calc<t_tab_sup)
+				return (t_calc>t_tab_inf and t_calc<t_tab_sup)
 			elif alternate_h=="<":
-				t_tab=Student.get_values(confidence-.5, n-1)
+				t_tab=(-1)*Student.get_values(1-confidence, n-1)
 				print("t_tab="+str(t_tab))
 				print("t_calc="+str(t_calc))
-				return t_calc<t_tab
+				return t_calc>t_tab
 			elif alternate_h==">":
 				t_tab=Student.get_values(1-confidence, n-1)
 				print("t_tab="+str(t_tab))
 				print("t_calc="+str(t_calc))
-				return t_calc>t_tab	
+				return t_calc<t_tab	
 			else:
 				print("Unknown alternate hypotesis")
 				exit()
@@ -363,15 +363,15 @@ def hypotesis_test(kind, parameter, param_0, alternate_h, n, confidence, mean=No
 				print("z_calc="+str(z_calc))
 				return (z_calc>z_tab_inf and z_calc<z_tab_sup)
 			elif alternate_h=="<":
+				z_tab=(-1)*normal.get_values(confidence-.5)
+				print("z_tab="+str(z_tab))
+				print("z_calc="+str(z_calc))
+				return z_calc>z_tab
+			elif alternate_h==">":
 				z_tab=normal.get_values(confidence-.5)
 				print("z_tab="+str(z_tab))
 				print("z_calc="+str(z_calc))
-				return z_calc<z_tab
-			elif alternate_h==">":
-				z_tab=normal.get_values(1-confidence)
-				print("z_tab="+str(z_tab))
-				print("z_calc="+str(z_calc))
-				return z_calc>z_tab	
+				return z_calc<z_tab	
 			else:
 				print("Unknown alternate hypotesis")
 				exit()
