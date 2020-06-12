@@ -709,6 +709,8 @@ def dphts():
 choose_screen=tk.Tk()
 choose_screen.title("StatCalc")
 choose_screen.geometry("500x400")
+photo=tk.PhotoImage(file="./StatCalcLogo.png")
+choose_screen.iconphoto(False, photo)
 welcome=tk.Label(choose_screen, text="Welcome to StatCalc, please select which statistic function you want to use:", font=("Times", 15), height=3, wraplength=450)
 button_bp=tk.Button(choose_screen, text="Box Plot", width=20, command=lambda:bps())
 button_hg=tk.Button(choose_screen, text="Histogram", width=20,command=lambda:hgs())

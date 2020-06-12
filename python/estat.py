@@ -56,6 +56,7 @@ def histogram_creator(values, k=None, k_mode=1):
 	heights=[]
 	n=len(values)
 	values.sort()
+	print(values)
 	if k==None:
 		if k_mode==1:
 			k=2*(n**(1/3))
@@ -67,10 +68,10 @@ def histogram_creator(values, k=None, k_mode=1):
 			print("Incorrect value for k_mode.")
 			exit()
 	k=int(k)
-	h=(values[n-1]-values[0])/k
+	h=(values[-1]-values[0])/k
 	heights=[0]*k
 	for num in values[:-1]:
-		heights[int(num/h)]+=1
+		heights[int(num/h-values[0])]+=1
 	heights[-1]+=1
 	return heights
 
