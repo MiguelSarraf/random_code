@@ -109,7 +109,7 @@ def do_histogram_param(k, k_format, data):
 		md+=1
 	median=float(x[i])+(mdi-acum[i-1])*delta/heights[i]
 	mo=heights.index(max(heights))
-	mode=float(x[mo])+heights[mo+1]*delta/(heights[mo-1]+heights[mo+1])
+	mode=float(x[mo])+(heights[mo]-heights[mo+1])*delta/(2*heights[mo]-heights[mo-1]-heights[mo+1])
 	text="Summary statistics:\nMean: "+str(int(1000*mean)/1000)+"\nMode: "+str(int(1000*mode)/1000)+"\nMedian: "+str(int(1000*median)/1000)
 	messagebox.showinfo("RESULTS", text)
 
